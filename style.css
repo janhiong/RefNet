@@ -1,0 +1,83 @@
+:root{
+  --wrapper-color: rgba(139, 109, 156, 0.5);
+  --title-color: rgba(255, 255, 255, 1);
+  --text-color: rgba(255, 255, 255, 1);
+}
+
+body{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.login-title{
+  font-family: Work Sans;
+  font-weight: 500;
+  font-stretch: condensed;
+  color: var(--text-color);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 40px;
+  width: max-content;
+  background-color: var(--wrapper-color);
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
+  border-radius: 15px;
+}
+
+.input-box{
+  display: flex;
+  flex-direction: row;
+  border-style: solid;
+  border-radius: 50px;
+  border-color: var(--text-color);
+  margin-bottom: 10px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 300px;
+}
+
+.input-box input{
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.input-box input::placeholder{
+  font-family: Work Sans;
+  color: var(--text-color);
+}
+
+.remember-forgot{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14.5px;
+  font-family: Work Sans;
+  color: white;
+}
+
+.register-info{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14.5px;
+  font-family: Work Sans;
+  color: white;
+}

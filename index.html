@@ -11,31 +11,32 @@
   <body>
     <div class="wrapper">
       <!-- TO DO! Update background image so when user scrolls up or down the background doesn't shift to white -->
-      <h1 class="login-title"> Login </h1>
-      <div class="input-box">
-        <input type="text" placeholder="Username" id="username" required>
-        <span class="icon-label">
-          <p class="fa-solid fa-user fa-sm" style="margin: 0px;"></p>
-        </span>
-      </div>
-
-      <div class="input-box">
-        <input type="password" placeholder="Password" id="password" required>
-        <span class="icon-label">
-          <p class="fa-solid fa-lock fa-sm" style="margin: 0px;"></p>
-        </span>
-      </div>
-
-      <div class ="remember-forgot">
-        <div>
-          <input type="checkbox" id="rememberme">
-          <label for="rememberme"> Remember Me </label>
+       <form action="#">
+        <h1 class="login-title"> Login </h1>
+        <div class="input-box">
+          <input type="text" placeholder="Username" id="username" required>
+          <span class="icon-label">
+            <p class="fa-solid fa-user fa-sm" style="margin: 0px;"></p>
+          </span>
         </div>
-        <a href="#" class="login-link"> Forgot password? </a>
-      </div>
-      
-      <button type="submit" class="loginBtn"> Sign In </button>
-      
+
+        <div class="input-box">
+          <input type="password" placeholder="Password" id="password" required>
+          <span class="icon-label">
+            <p class="fa-solid fa-lock fa-sm" style="margin: 0px;"></p>
+          </span>
+        </div>
+
+        <div class ="remember-forgot">
+          <div>
+            <input type="checkbox" id="rememberme">
+            <label for="rememberme"> Remember Me </label>
+          </div>
+          <a href="#" class="login-link"> Forgot password? </a>
+        </div>
+        
+        <button type="submit" class="loginBtn"> Sign In </button>
+      </form>
       <div class="register-info">
         <label> Not a Member? &nbsp </label>
         <a href="#" class="login-link"> Register Here </a>

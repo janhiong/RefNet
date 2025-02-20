@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Login | Referral Website </title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Oxanium:wght@200..800&family=Poiret+One&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/6a4e8481e2.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <!-- TO DO! Update background image so when user scrolls up or down the background doesn't shift to white -->
+      <form method="post">
+        <h1 class="login-title"> Login </h1>
+        
+        <div class="input-box">
+          <input type="text" placeholder="Username" name="user_name" required>
+          <span class="icon-label">
+            <p class="fa-solid fa-user fa-sm" style="margin: 0px;"></p>
+          </span>
+        </div>
+
+        <div class="input-box">
+          <input type="password" placeholder="Password" name="password" required>
+          <span class="icon-label">
+            <p class="fa-solid fa-lock fa-sm" style="margin: 0px;"></p>
+          </span>
+        </div>
+
+        <div class ="remember-forgot">
+          <div>
+            <input type="checkbox" id="rememberme">
+            <label for="rememberme"> Remember Me </label>
+          </div>
+          <a href="#" class="login-link"> Forgot password? </a>
+        </div>
+        <input type="submit" class="loginBtn" value="Sign In">
+      </form>
+      
+      <div class="register-info">
+        <label> Not a Member? &nbsp </label>
+        <a href="signup.html" class="login-link"> Register Here </a>
+      </div>
+
+      <hr>
+
+      <p style="margin-top: 5; margin-bottom: 5;"> Sign In With </p>
+      
+      <div class="signin-group">
+        <image class="signin-thumbnail" src="images/google-icon.png">
+          <image class="signin-thumbnail" src="images/linkedin-icon.png"></image>
+      </div>
+    </div>
+    <script src="js/auth.js"></script>
+  </body>
+</html>

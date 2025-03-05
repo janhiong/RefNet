@@ -159,3 +159,28 @@ p {
   flex-direction: row;
   justify-content: space-between;
 }
+
+.upload-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+}
+
+.upload-button {
+  width: 500px;
+  height: 45px;
+  text-align: center;
+  color: rgb(29 95 149);
+  background:white;
+  border: none;
+  margin-bottom: 20px;
+  border-radius: 40px;
+  cursor: pointer;
+  font-size: 14.5px;
+  font-family: Work Sans;
+}
+
+input::file-selector-button {
+  display: none;
+}

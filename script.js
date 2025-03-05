@@ -1,16 +1,27 @@
+// Search Functionality
 const searchWrapper = document.querySelector(".search-input");
 const inputBox = searchWrapper.querySelector("input");
 const suggBox = searchWrapper.querySelector(".autocom-box");
+let suggestions = [
+  "Google",
+  "SAP",
+  "NASA",
+  "Comcast",
+  "Amazon",
+  "Microsoft",
+  "Meta",
+  "Children Hospital of Pennsylvania"
+];
 let linkTag = searchWrapper.querySelector("a");
 let webLink;
 
 // press & release key
 inputBox.onkeyup = (e) => {
-  let userData = e.target.value; //user entered data
+  let userData = e.target.value.trim(); //user entered data
   let emptyArray = [];
   if (userData) {
     emptyArray = suggestions.filter((data) => {
-      //filter array to return only those words which are start with user enetered chars
+      //filter array to return only those words which start with user entered character
       return data.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
     });
     emptyArray = emptyArray.map((data) => {
@@ -23,7 +34,8 @@ inputBox.onkeyup = (e) => {
     let allList = suggBox.querySelectorAll("li"); // takes all listed items in suggestion box
   }
   else {
-    searchWrapper.classList.remove("active");
+    searchWrapper.classList.remove("active"); // hides the searchWrapper
+    suggBox.innerHTML = "";
   }
 }
 
@@ -38,4 +50,3 @@ function showSuggestions(list) {
   }
   suggBox.innerHTML = listData;
 }
-

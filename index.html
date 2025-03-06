@@ -38,13 +38,13 @@
         }).then(extractedText =>{
           resultText.value = extractedText.toLowerCase();
           if (keyWords.every(str => resultText.value.includes(str))) {
-            console.log("Good resume.");
+            alert("You have successfully uploaded your resume")
           }
           else {
             alert("Your resume is missing one of the following sections: Name, Skills, Experience, Education");
           }
         })
-      })
+      });
       
     </script>
   </body>

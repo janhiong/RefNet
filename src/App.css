@@ -13,3 +13,61 @@
   align-items: center;
   min-width: 200px;
 }
+.top-right-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.upload-resume-btn {
+  padding: 10px 15px;
+  border: none;
+  background: #4CAF50;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  text-decoration: none; /* Removes underline from Link */
+  transition: background 0.3s;
+}
+
+.upload-resume-btn:hover {
+  background: #45a049;
+}
+.upload-resume-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.resume-preview {
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.resume-preview iframe {
+  border: none;
+}
+
+.navbar {
+  background: #007bff;
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px;
+}
+
+.navbar a:hover {
+  background: #0056b3;
+  border-radius: 5px;
+}
+

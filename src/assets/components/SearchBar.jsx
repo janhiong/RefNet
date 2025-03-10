@@ -1,37 +1,34 @@
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
-
 import "./SearchBar.css";
 
 export const SearchBar = ({ setResults }) => {
   const [input, setInput] = useState("");
 
   const fetchData = (value) => {
-    fetch("https://jsonplaceholder.typicode.com/users")
+    if (!value) {
+      setResults([]); // Clear results if input is empty
+      return;
+    }
+
+    fetch(`http://localhost:4000/api/search-users?query=${value}`)
       .then((response) => response.json())
       .then((json) => {
-        const results = json.filter((user) => {
-          return (
-            value &&
-            user &&
-            user.name &&
-            user.name.toLowerCase().includes(value)
-          );
-        });
-        setResults(results);
-      });
+        setResults(json); // Update search results
+      })
+      .catch((error) => console.error("Error fetching search results:", error));
   };
 
   const handleChange = (value) => {
     setInput(value);
-    fetchData(value);
+    fetchData(value); // Fetch search results
   };
 
   return (
     <div className="input-wrapper">
       <FaSearch id="search-icon" />
       <input
-        placeholder="Type to search..."
+        placeholder="Search for people..."
         value={input}
         onChange={(e) => handleChange(e.target.value)}
       />

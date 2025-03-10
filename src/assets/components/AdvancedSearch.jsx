@@ -2,6 +2,15 @@ import React, { useState } from "react";
 import Select from "react-select";
 import "./AdvancedSearch.css"; // Ensure CSS is imported
 
+const companyOptions = [
+  { value: "google", label: "Google" },
+  { value: "microsoft", label: "Microsoft" },
+  { value: "amazon", label: "Amazon" },
+  { value: "facebook", label: "Facebook" },
+  { value: "apple", label: "Apple" },
+  { value: "netflix", label: "Netflix" },
+];
+
 const jobOptions = [
   { value: "developer", label: "Developer" },
   { value: "designer", label: "Designer" },
@@ -19,25 +28,25 @@ const availabilityOptions = [
 ];
 
 const AdvancedSearch = ({ onSearch }) => {
-  const [name, setName] = useState("");
+  const [company, setCompany] = useState(null);
   const [date, setDate] = useState("");
   const [jobTitle, setJobTitle] = useState(null);
   const [availability, setAvailability] = useState(null);
 
   const handleSearch = () => {
-    onSearch({ name, date, jobTitle, availability, company });
+    onSearch({ company, date, jobTitle, availability });
   };
 
   return (
     <div className="advanced-search-container">
       <div className="search-container">
-
         <div className="search-fields">
-          <input
-            type="text"
-            placeholder="Type to search..."
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+          <Select
+            className="react-select-container"
+            options={companyOptions}
+            placeholder="Select Company"
+            value={company}
+            onChange={setCompany}
           />
 
           <input
@@ -62,8 +71,6 @@ const AdvancedSearch = ({ onSearch }) => {
             value={availability}
             onChange={setAvailability}
           />
-
-          
         </div>
 
         <div className="search-button-container">

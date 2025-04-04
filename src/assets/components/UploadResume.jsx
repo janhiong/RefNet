@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 const UploadResume = () => {
   const [file, setFile] = useState(null);
+  const [text, setText] = useState("")
   const [previewURL, setPreviewURL] = useState(null);
 
   const handleFileChange = (event) => {
@@ -22,6 +23,18 @@ const UploadResume = () => {
 
   const handleSubmit = () => {
     if (file) {
+      const reader = new FileReader();
+    
+      reader.onload = async (event) => {
+        try {
+          const pdfData = await pdf(event.target.result);
+          setText(pdfData.text);
+        } catch (error) {
+          console.error("Error parsing PDF:", error);
+          setText("Error parsing PDF");
+        }
+      };
+
       alert(`Uploading: ${file.name}`);
       // Here you can add logic to upload the file to a backend server
     } else {

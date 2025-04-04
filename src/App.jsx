@@ -41,7 +41,6 @@ function App() {
           <Route path="/upload-resume" element={<UploadResume />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/search" element={<AppContainer />} />
           <Route path="/friend-requests" element={<FriendRequest />} />
         </Routes>
       </div>

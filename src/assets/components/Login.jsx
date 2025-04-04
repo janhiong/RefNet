@@ -24,7 +24,7 @@ const Login = () => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("email", email);
 
-      navigate("/search");
+      navigate("/");
     } catch (err) {
       setError(err.message);
     }

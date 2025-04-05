@@ -9,8 +9,7 @@ app.use(fileupload());
 
 app.post("/extract-text", (req,res) => {
   if (!req.files && !req.files.pdfFile) {
-    req.status(400);
-    res.end();
+    return res.status(400).send({error: "No file uploaded"})
   }
 
   pdfParse(req.files.pdfFile).then(result => {

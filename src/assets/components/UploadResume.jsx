@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const UploadResume = () => {
   const [file, setFile] = useState(null);
-  const [text, setText] = useState("")
+  const [textExtract, setTextExtract] = useState("")
   const [previewURL, setPreviewURL] = useState(null);
 
   const handleFileChange = (event) => {
@@ -23,20 +23,22 @@ const UploadResume = () => {
 
   const handleSubmit = () => {
     if (file) {
-      const reader = new FileReader();
-    
-      reader.onload = async (event) => {
-        try {
-          const pdfData = await pdf(event.target.result);
-          setText(pdfData.text);
-        } catch (error) {
-          console.error("Error parsing PDF:", error);
-          setText("Error parsing PDF");
-        }
-      };
+      const formData = new FormData()
 
-      alert(`Uploading: ${file.name}`);
-      // Here you can add logic to upload the file to a backend server
+      formData.append("pdfFile",file)
+
+      fetch("http://localhost:4000/api/extract-text", {
+        method: "post",
+        body: formData
+      })
+      .then(res => {
+        return res.text()
+      })
+      .then(extractedText => {
+        setTextExtract(extractedText)
+        console.log(textExtract)
+      })
+
     } else {
       alert("Please select a file first!");
     }

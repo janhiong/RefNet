@@ -8,7 +8,7 @@ const Logout = () => {
 
   const handleLogout = (e) => {
     e.preventDefault();
-    localStorage.removeItem("email")
+    localStorage.removeItem("user")
     localStorage.removeItem("token")
 
     navigate("/login")

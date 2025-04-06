@@ -14,10 +14,10 @@ import FriendRequest from "./assets/components/FriendRequest";
 
 function App() {
   const [results, setResults] = useState([]);
-  const [userEmail, setUserEmail] = useState(null)
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
-    setUserEmail(localStorage.getItem('email'))
+    setUser(localStorage.getItem('user'))
   })
   
   return (
@@ -28,7 +28,7 @@ function App() {
           <Link to="/">Home</Link>
           <Link to="/friend-requests">Connections</Link>
           <Link to="/upload-resume">Upload Resume</Link>
-          {userEmail ? <Link to='/logout'>Logout</Link> : <Link to='/login'>Login</Link>}
+          {user ? <Link to='/logout'>Logout</Link> : <Link to='/login'>Login</Link>}
         </nav>
 
         <Routes>
@@ -44,9 +44,9 @@ function App() {
             </>
           } />
           <Route path="/upload-resume" element={<UploadResume />} />
-          <Route path="/login" element={userEmail ? <Navigate to="/" /> : <Login />} />
-          <Route path="/logout" element={userEmail ? <Logout /> : <Navigate to="/login" />} />
-          <Route path="/signup" element={userEmail ? <Navigate to="/" /> : <Signup />} />
+          <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+          <Route path="/logout" element={user ? <Logout /> : <Navigate to="/login" />} />
+          <Route path="/signup" element={user ? <Navigate to="/" /> : <Signup />} />
           <Route path="/friend-requests" element={<FriendRequest />} />
         </Routes>
       </div>

@@ -13,8 +13,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const upload = multer()
-
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -25,9 +23,15 @@ mongoose.connect(process.env.MONGO_URI, {
 // User Schema
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
 });
 const User = mongoose.model('User', userSchema);
+
+// Resume Schema
+const resumeSchema = new mongoose.Schema({
+  resumeUrl: {type: String, required: true, unique: true},
+  password: {type: String, required: true},
+})
 
 // Signup Route
 app.post('/api/signup', async (req, res) => {
@@ -61,22 +65,25 @@ app.post('/api/login', async (req, res) => {
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token, user: { email: user.email } });
+        const id = user._id
+
+        res.json({ token, id, user: { email: user.email } });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
 });
 
-app.get("/api/search-users", async (req, res) => {
+// Search Users Logic
+app.get('/api/search-users', async (req, res) => {
     try {
-      const { query } = req.query; // Get the search query from frontend
+      const { query } = req.query;
   
       if (!query) {
-        return res.json([]); // Return empty array if no query
+        return res.json([]);
       }
   
       const users = await User.find({
-        name: { $regex: query, $options: "i" }, // Case-insensitive search
+        name: { $regex: query, $options: "i" },
       });
   
       res.json(users);
@@ -84,6 +91,26 @@ app.get("/api/search-users", async (req, res) => {
       res.status(500).json({ message: err.message });
     }
   });  
+
+// Handle Upload Resume Logic 
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './images')
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '--' + file.originalname)
+  }
+})
+
+const upload = multer({ storage: fileStorageEngine });
+
+// Resume Route
+app.post('/api/upload-resume', upload.single('image'), (req, res) => {
+  console.log(req.file)
+  const resumeUrl = req.file.path
+  res.json({path: resumeUrl})
+  res.send('Single file upload success')
+})
 
 // Start Server
 const PORT = process.env.PORT || 4000;

@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const UploadResume = () => {
   const [file, setFile] = useState(null);
   const [textExtract, setTextExtract] = useState("")
   const [previewURL, setPreviewURL] = useState(null);
+  const [resumeUrl, setResumeUrl] = useState(null)
+
+  useEffect(() => {
+
+  })
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -21,24 +26,32 @@ const UploadResume = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     if (file) {
-      const formData = new FormData()
+      try {
+        const data = new FormData()
 
-      formData.append("pdfFile",file)
+        data.append('image',file)
+        
+        const res = await fetch('http://localhost:4000/api/upload-resume', {
+          method: 'POST',
+          body: data,
+        })
+        console.log(res.path)
+        alert('File sent successfully')
 
-      fetch("http://localhost:4000/api/extract-text", {
-        method: "post",
-        body: formData
-      })
-      .then(res => {
-        return res.text()
-      })
-      .then(extractedText => {
-        setTextExtract(extractedText)
-        console.log(textExtract)
-      })
+        const result = await res.json()
+        const url = result.path
+        
+        setResumeUrl(`./${url}`)
 
+        
+      }
+      catch (err) {
+        console.log(err)
+      }
+    
     } else {
       alert("Please select a file first!");
     }
@@ -54,7 +67,8 @@ const UploadResume = () => {
       <button onClick={handleSubmit}>Submit</button>
 
       {/* Display Uploaded Resume */}
-      {file && (
+      
+      {/* {file && (
         <div className="resume-preview">
           <h3>Uploaded Resume: {file.name}</h3>
           {previewURL ? (
@@ -68,7 +82,12 @@ const UploadResume = () => {
             <p>(Preview not available for this file type)</p>
           )}
         </div>
-      )}
+      )} */}
+
+      <div className="">
+        <iframe src={resumeUrl} width="100%" height="500px" title="Resume Preview"></iframe>
+      </div>
+
     </div>
   );
 };

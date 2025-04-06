@@ -38,15 +38,11 @@ const UploadResume = () => {
           method: 'POST',
           body: data,
         })
-        console.log(res.path)
-        alert('File sent successfully')
 
         const result = await res.json()
         const url = result.path
         
         setResumeUrl(`./${url}`)
-
-        
       }
       catch (err) {
         console.log(err)

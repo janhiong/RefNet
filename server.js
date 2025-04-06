@@ -30,8 +30,9 @@ const User = mongoose.model('User', userSchema);
 // Resume Schema
 const resumeSchema = new mongoose.Schema({
   resumeUrl: {type: String, required: true, unique: true},
-  password: {type: String, required: true},
+  belongsToUser: {type: String, required: true},
 })
+const Resume = mongoose.model('Resume', resumeSchema)
 
 // Signup Route
 app.post('/api/signup', async (req, res) => {
@@ -105,11 +106,15 @@ const fileStorageEngine = multer.diskStorage({
 const upload = multer({ storage: fileStorageEngine });
 
 // Resume Route
-app.post('/api/upload-resume', upload.single('image'), (req, res) => {
-  console.log(req.file)
-  const resumeUrl = req.file.path
+app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
+  const resumeUrl = await req.file.path
+
+  // const userID = 
+
+  // const resume = new Resume({ resumeUrl: `./${resumeUrl}`, belongsToUser: userID})
+  // await resume.save()
+
   res.json({path: resumeUrl})
-  res.send('Single file upload success')
 })
 
 // Start Server

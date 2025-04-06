@@ -4,6 +4,7 @@ import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import multer from 'multer';
 
 dotenv.config();
 
@@ -11,6 +12,8 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+const upload = multer()
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {

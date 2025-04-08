@@ -8,7 +8,7 @@ const Login = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
 
@@ -22,7 +22,9 @@ const Login = () => {
       if (!response.ok) throw new Error(data.message);
 
       localStorage.setItem("token", data.token);
-      navigate("/search");
+      localStorage.setItem("user", data.id)
+
+      navigate("/");
     } catch (err) {
       setError(err.message);
     }
@@ -32,7 +34,7 @@ const Login = () => {
     <div className="auth-container">
       <h2>Login</h2>
       {error && <p className="error-message">{error}</p>}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLogin}>
         <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <button type="submit">Login</button>

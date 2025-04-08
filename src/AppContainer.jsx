@@ -1,7 +1,5 @@
 import { useState } from "react";
 import "./App.css";
-import { SearchBar } from "./assets/components/SearchBar";
-import { SearchResultsList } from "./assets/components/SearchResultsList";
 import AdvancedSearch from "./assets/components/AdvancedSearch";
 
 const AppContainer = () => {

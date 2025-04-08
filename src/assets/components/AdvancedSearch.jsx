@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Select from "react-select";
 import "./AdvancedSearch.css"; // Ensure CSS is imported
 
+// Options for the filters
 const companyOptions = [
   { value: "google", label: "Google" },
   { value: "microsoft", label: "Microsoft" },
@@ -11,7 +12,15 @@ const companyOptions = [
   { value: "netflix", label: "Netflix" },
 ];
 
-const jobOptions = [
+const jobFunctionOptions = [
+  { value: "development", label: "Development" },
+  { value: "design", label: "Design" },
+  { value: "marketing", label: "Marketing" },
+  { value: "sales", label: "Sales" },
+  { value: "support", label: "Support" },
+];
+
+const jobTitleOptions = [
   { value: "developer", label: "Developer" },
   { value: "designer", label: "Designer" },
   { value: "manager", label: "Manager" },
@@ -21,63 +30,147 @@ const jobOptions = [
   { value: "data scientist", label: "Data Scientist" },
 ];
 
-const availabilityOptions = [
+const workModelOptions = [
   { value: "full-time", label: "Full-Time" },
   { value: "part-time", label: "Part-Time" },
   { value: "internship", label: "Internship" },
+  { value: "remote", label: "Remote" },
+  { value: "hybrid", label: "Hybrid" },
+  { value: "onsite", label: "Onsite" },
+];
+
+const locationOptions = [
+  { value: "new-york", label: "New York" },
+  { value: "san-francisco", label: "San Francisco" },
+  { value: "los-angeles", label: "Los Angeles" },
+  { value: "boston", label: "Boston" },
+  { value: "remote", label: "Remote" },
+];
+
+const experienceLevelOptions = [
+  { value: "junior", label: "Junior" },
+  { value: "mid", label: "Mid" },
+  { value: "senior", label: "Senior" },
+  { value: "lead", label: "Lead" },
+  { value: "director", label: "Director" },
+];
+
+const salaryRangeOptions = [
+  { value: "0-50000", label: "$0 - $50,000" },
+  { value: "50000-100000", label: "$50,000 - $100,000" },
+  { value: "100000-150000", label: "$100,000 - $150,000" },
+  { value: "150000-200000", label: "$150,000 - $200,000" },
+  { value: "200000+", label: "$200,000+" },
+];
+
+const datePostedOptions = [
+  { value: "last-7-days", label: "Last 7 Days" },
+  { value: "last-30-days", label: "Last 30 Days" },
+  { value: "all-time", label: "All Time" },
 ];
 
 const AdvancedSearch = ({ onSearch }) => {
   const [company, setCompany] = useState(null);
-  const [date, setDate] = useState("");
+  const [jobFunction, setJobFunction] = useState(null);
   const [jobTitle, setJobTitle] = useState(null);
-  const [availability, setAvailability] = useState(null);
+  const [workModel, setWorkModel] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [experienceLevel, setExperienceLevel] = useState(null);
+  const [salaryRange, setSalaryRange] = useState(null);
+  const [datePosted, setDatePosted] = useState(null);
+  
+  // State for controlling sidebar visibility
+  const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const handleSearch = () => {
-    onSearch({ company, date, jobTitle, availability });
+    onSearch({
+      company,
+      jobFunction,
+      jobTitle,
+      workModel,
+      location,
+      experienceLevel,
+      salaryRange,
+      datePosted,
+    });
   };
 
   return (
-    <div className="advanced-search-container">
-      <div className="search-container">
-        <div className="search-fields">
-          <Select
-            className="react-select-container"
-            options={companyOptions}
-            placeholder="Select Company"
-            value={company}
-            onChange={setCompany}
-          />
+    <>
+      {/* Filter Button */}
+      <button className="filter-button" onClick={() => setSidebarVisible(!sidebarVisible)}>
+        Filter
+      </button>
 
-          <input
-            type="date"
-            placeholder="Select Availability"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
+      {/* Sidebar for filters */}
+      {sidebarVisible && (
+        <div className="sidebar">
+          <div className="search-fields">
+            <Select
+              className="react-select-container"
+              options={companyOptions}
+              placeholder="Select Company"
+              value={company}
+              onChange={setCompany}
+            />
+            <Select
+              className="react-select-container"
+              options={jobFunctionOptions}
+              placeholder="Select Job Function"
+              value={jobFunction}
+              onChange={setJobFunction}
+            />
+            <Select
+              className="react-select-container"
+              options={jobTitleOptions}
+              placeholder="Select Job Title"
+              value={jobTitle}
+              onChange={setJobTitle}
+            />
+            <Select
+              className="react-select-container"
+              options={workModelOptions}
+              placeholder="Select Work Model"
+              value={workModel}
+              onChange={setWorkModel}
+            />
+            <Select
+              className="react-select-container"
+              options={locationOptions}
+              placeholder="Select Location"
+              value={location}
+              onChange={setLocation}
+            />
+            <Select
+              className="react-select-container"
+              options={experienceLevelOptions}
+              placeholder="Select Experience Level"
+              value={experienceLevel}
+              onChange={setExperienceLevel}
+            />
+            <Select
+              className="react-select-container"
+              options={salaryRangeOptions}
+              placeholder="Select Salary Range"
+              value={salaryRange}
+              onChange={setSalaryRange}
+            />
+            <Select
+              className="react-select-container"
+              options={datePostedOptions}
+              placeholder="Select Date Posted"
+              value={datePosted}
+              onChange={setDatePosted}
+            />
+          </div>
 
-          <Select
-            className="react-select-container"
-            options={jobOptions}
-            placeholder="Select Job Title"
-            value={jobTitle}
-            onChange={setJobTitle}
-          />
-
-          <Select
-            className="react-select-container"
-            options={availabilityOptions}
-            placeholder="Select Type of Job"
-            value={availability}
-            onChange={setAvailability}
-          />
+          {/* Search Button */}
+          <div className="search-button-container">
+            <button onClick={handleSearch}>Search</button>
+          </div>
         </div>
-
-        <div className="search-button-container">
-          <button onClick={handleSearch}>Search</button>
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

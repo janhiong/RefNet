@@ -16,7 +16,6 @@ const UploadResume = () => {
     if (selectedFile) {
       setFile(selectedFile);
 
-      // Generate preview URL for PDF files
       if (selectedFile.type === "application/pdf") {
         const fileURL = URL.createObjectURL(selectedFile);
         setPreviewURL(fileURL);
@@ -25,7 +24,7 @@ const UploadResume = () => {
       }
     }
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (file) {
@@ -66,7 +65,6 @@ const UploadResume = () => {
       <h2>Upload Your Resume</h2>
       <p>Select a PDF or DOCX file to showcase your experience.</p>
       
-      {/* File Input */}
       <input type="file" accept=".pdf,.docx" onChange={handleFileChange} />
       <button onClick={handleSubmit}>Submit</button>
 

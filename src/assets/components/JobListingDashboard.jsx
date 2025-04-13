@@ -1,6 +1,6 @@
 import React, {useState, useEffect } from "react";
 import JobCard from "./JobCard";
-import "/Users/janhiong/Downloads/referral/referral/src/assets/components/JobListingDashoard.css";
+import "./JobListingDashoard.css";
 
 const JobListingDashboard = ({ filter }) => {
     const [jobs, setJobs ] = useState([]);

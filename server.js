@@ -30,7 +30,7 @@ const User = mongoose.model('User', userSchema);
 // Resume Schema
 const resumeSchema = new mongoose.Schema({
   resumeUrl: {type: String, required: true, unique: true},
-  belongsToUser: {type: String, required: true},
+  belongsToUser: {type: String, required: true, unique: true},
 })
 const Resume = mongoose.model('Resume', resumeSchema)
 
@@ -66,14 +66,13 @@ app.post('/api/login', async (req, res) => {
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
         const userForToken = {
-          email: user.email,
+          userId: user._id,
           password: user.password
         }
 
         const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
-        const id = user._id
 
-        res.json({ token, id, user: { email: user.email } });
+        res.json({ token, user: { email: user.email } });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
@@ -98,10 +97,6 @@ app.get('/api/search-users', async (req, res) => {
     }
   });  
 
-app.get('/api/resumes:id'), async (req, res) => {
-  return res.status(200)
-}
-
 // Handle Upload Resume Logic 
 const fileStorageEngine = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -114,7 +109,11 @@ const fileStorageEngine = multer.diskStorage({
 
 const upload = multer({ storage: fileStorageEngine });
 
-// Resume Route
+// Resume Routes
+app.get('/api/upload-resume', async (req, res) => {
+  res.status(200)
+})
+
 app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
   const authenticationHeader = req.headers['authorization']
   const token = authenticationHeader.split(' ')[1]
@@ -123,12 +122,25 @@ app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
 
   const resumeUrl = await req.file.path
 
-  await Resume.create({
-    resumeUrl,
-    belongsToUser: decoded.email,
-  })
+  const resume = await Resume.findOne({belongsToUser: decoded.userId})
+
+  if (resume) {
+    resume.resumeUrl = resumeUrl
+    await resume.save()
+  }
+  else {
+    await Resume.create({
+      resumeUrl,
+      belongsToUser: decoded.userId,
+    })
+  }
 
   res.json({path: resumeUrl})
+})
+
+app.get('/api/users', async (req, res) => {
+  const users = await User.find({})
+  res.json(users)
 })
 
 app.get('/api/resumes', async (req, res) => {
@@ -136,9 +148,15 @@ app.get('/api/resumes', async (req, res) => {
   res.json(resumes)
 })
 
-app.get('/api/users', async (req, res) => {
-  const users = await User.find({})
-  res.json(users)
+app.get('/api/resumes/:id', async (req, res) => {
+  const userId = req.params.id
+  const resume = await Resume.findOne({belongsToUser: userId})
+  
+  if (!resume) {
+    res.json({error: 'User does not exist'})
+  }
+
+  res.json({path: resume.resumeUrl})
 })
 
 // Start Server

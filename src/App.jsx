@@ -8,18 +8,16 @@ import Login from "./assets/components/Login";
 import Signup from "./assets/components/Signup";
 import AppContainer from "./AppContainer"; 
 import FriendRequest from "./assets/components/FriendRequest";
-import JobListingDashboard from "./assets/components/JobListingDashboard";
 
-const App = () => {
-  const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [filter, setFilter] = useState({});
 
-  // This function receives filter data from the AdvancedSearch component.
-  const handleSearch = (filterData) => {
-    setFilter(filterData);
-    setSidebarVisible(false);
-  };
+function App() {
+  const [results, setResults] = useState([]);
+  const [user, setUser] = useState(null)
 
+  useEffect(() => {
+    setUser(localStorage.getItem('user'))
+  })
+  
   return (
     <Router>
       <div className="App">

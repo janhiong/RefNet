@@ -22,7 +22,6 @@ const Login = () => {
       if (!response.ok) throw new Error(data.message);
 
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", data.id)
 
       navigate("/");
     } catch (err) {

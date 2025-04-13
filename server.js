@@ -65,7 +65,12 @@ app.post('/api/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const userForToken = {
+          email: user.email,
+          password: user.password
+        }
+
+        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
         const id = user._id
 
         res.json({ token, id, user: { email: user.email } });
@@ -93,6 +98,10 @@ app.get('/api/search-users', async (req, res) => {
     }
   });  
 
+app.get('/api/resumes:id'), async (req, res) => {
+  return res.status(200)
+}
+
 // Handle Upload Resume Logic 
 const fileStorageEngine = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -107,14 +116,29 @@ const upload = multer({ storage: fileStorageEngine });
 
 // Resume Route
 app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
+  const authenticationHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
+  
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
   const resumeUrl = await req.file.path
 
-  // const userID = 
-
-  // const resume = new Resume({ resumeUrl: `./${resumeUrl}`, belongsToUser: userID})
-  // await resume.save()
+  await Resume.create({
+    resumeUrl,
+    belongsToUser: decoded.email,
+  })
 
   res.json({path: resumeUrl})
+})
+
+app.get('/api/resumes', async (req, res) => {
+  const resumes = await Resume.find({}) 
+  res.json(resumes)
+})
+
+app.get('/api/users', async (req, res) => {
+  const users = await User.find({})
+  res.json(users)
 })
 
 // Start Server

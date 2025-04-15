@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import { SearchBar } from "./assets/components/SearchBar";
 import AdvancedSearch from "./assets/components/AdvancedSearch";
 
 const AppContainer = () => {
@@ -17,9 +18,6 @@ const AppContainer = () => {
 
       <AdvancedSearch onSearch={() => {}} />
 
-      <div className="results-container">
-        {results.length > 0 && <SearchResultsList results={results} />}
-      </div>
     </div>
   );
 };

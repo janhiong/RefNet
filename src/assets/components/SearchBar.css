@@ -1,0 +1,30 @@
+/* SearchBar.css */
+
+/* Style for the Filter Button */
+.filter-button-container {
+    display: flex;
+    justify-content: center; /* Center the button */
+    margin-top: 20px;
+  }
+  
+  .filter-button {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #5c6bc0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    gap: 8px;
+  }
+  
+  .filter-button:hover {
+    background-color: #3f4a88;
+  }
+  
+  #filter-icon {
+    font-size: 20px;
+  }
+  

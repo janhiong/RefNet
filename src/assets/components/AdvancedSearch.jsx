@@ -78,11 +78,9 @@ const AdvancedSearch = ({ onSearch }) => {
   const [experienceLevel, setExperienceLevel] = useState(null);
   const [salaryRange, setSalaryRange] = useState(null);
   const [datePosted, setDatePosted] = useState(null);
-  
-  // State for controlling sidebar visibility
-  const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const handleSearch = () => {
+    // Pass all the selected filter options to the parent
     onSearch({
       company,
       jobFunction,
@@ -96,81 +94,83 @@ const AdvancedSearch = ({ onSearch }) => {
   };
 
   return (
-    <>
-      {/* Filter Button */}
-      <button className="filter-button" onClick={() => setSidebarVisible(!sidebarVisible)}>
-        Filter
-      </button>
+    <div className="advanced-search-container">
+      <div className="search-container">
+        <div className="search-fields">
+          {/* Company Filter */}
+          <Select
+            className="react-select-container"
+            options={companyOptions}
+            placeholder="Select Company"
+            value={company}
+            onChange={setCompany}
+          />
 
-      {/* Sidebar for filters */}
-      {sidebarVisible && (
-        <div className="sidebar">
-          <div className="search-fields">
-            <Select
-              className="react-select-container"
-              options={companyOptions}
-              placeholder="Select Company"
-              value={company}
-              onChange={setCompany}
-            />
-            <Select
-              className="react-select-container"
-              options={jobFunctionOptions}
-              placeholder="Select Job Function"
-              value={jobFunction}
-              onChange={setJobFunction}
-            />
-            <Select
-              className="react-select-container"
-              options={jobTitleOptions}
-              placeholder="Select Job Title"
-              value={jobTitle}
-              onChange={setJobTitle}
-            />
-            <Select
-              className="react-select-container"
-              options={workModelOptions}
-              placeholder="Select Work Model"
-              value={workModel}
-              onChange={setWorkModel}
-            />
-            <Select
-              className="react-select-container"
-              options={locationOptions}
-              placeholder="Select Location"
-              value={location}
-              onChange={setLocation}
-            />
-            <Select
-              className="react-select-container"
-              options={experienceLevelOptions}
-              placeholder="Select Experience Level"
-              value={experienceLevel}
-              onChange={setExperienceLevel}
-            />
-            <Select
-              className="react-select-container"
-              options={salaryRangeOptions}
-              placeholder="Select Salary Range"
-              value={salaryRange}
-              onChange={setSalaryRange}
-            />
-            <Select
-              className="react-select-container"
-              options={datePostedOptions}
-              placeholder="Select Date Posted"
-              value={datePosted}
-              onChange={setDatePosted}
-            />
-          </div>
+          {/* Job Function Filter */}
+          <Select
+            className="react-select-container"
+            options={jobFunctionOptions}
+            placeholder="Select Job Function"
+            value={jobFunction}
+            onChange={setJobFunction}
+          />
 
-          {/* Search Button */}
-          <div className="search-button-container">
-            <button onClick={handleSearch}>Search</button>
-          </div>
+          {/* Job Title Filter */}
+          <Select
+            className="react-select-container"
+            options={jobTitleOptions}
+            placeholder="Select Job Title"
+            value={jobTitle}
+            onChange={setJobTitle}
+          />
+
+          {/* Work Model Filter */}
+          <Select
+            className="react-select-container"
+            options={workModelOptions}
+            placeholder="Select Work Model"
+            value={workModel}
+            onChange={setWorkModel}
+          />
+
+          {/* Location Filter */}
+          <Select
+            className="react-select-container"
+            options={locationOptions}
+            placeholder="Select Location"
+            value={location}
+            onChange={setLocation}
+          />
+
+          {/* Experience Level Filter */}
+          <Select
+            className="react-select-container"
+            options={experienceLevelOptions}
+            placeholder="Select Experience Level"
+            value={experienceLevel}
+            onChange={setExperienceLevel}
+          />
+
+          {/* Salary Range Filter */}
+          <Select
+            className="react-select-container"
+            options={salaryRangeOptions}
+            placeholder="Select Salary Range"
+            value={salaryRange}
+            onChange={setSalaryRange}
+          />
+
+          {/* Date Posted Filter */}
+          <Select
+            className="react-select-container"
+            options={datePostedOptions}
+            placeholder="Select Date Posted"
+            value={datePosted}
+            onChange={setDatePosted}
+          />
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 

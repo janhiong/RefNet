@@ -43,6 +43,11 @@ const FriendRequest = () => {
     }
   };
 
+  // Unsend a request
+  const unsendRequest = (user) => {
+    setSentRequests(sentRequests.filter((id) => id !== user.id));
+  };
+
   // Accept a request: move to connections
   const acceptRequest = (user) => {
     setConnections([...connections, user]);
@@ -82,8 +87,8 @@ const FriendRequest = () => {
                   className="friend-avatar"
                 />
                 <div className="friend-info">
-                  <span className="friend-name">{user.name}</span>
-                  <small>{user.title || user.email}</small>
+                  <div className="friend-name">{user.name}</div>
+                  <div className="friend-title"><small>{user.title || user.email} </small></div>
                 </div>
                 <button
                   onClick={() => sendRequest(user)}
@@ -161,7 +166,7 @@ const FriendRequest = () => {
                   <span className="friend-name">{user.name}</span>
                   <small>{user.title || user.email}</small>
                 </div>
-                <button disabled>Request Sent</button>
+                <button onClick={() => unsendRequest(user)}>Unsend</button>
               </li>
             ))}
           </ul>

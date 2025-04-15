@@ -1,6 +1,6 @@
 import React, {useState, useEffect } from "react";
 import JobCard from "./JobCard";
-import "/Users/janhiong/Downloads/referral/referral/src/assets/components/JobListingDashoard.css";
+import "./JobListingDashoard.css";
 
 const JobListingDashboard = ({ filter }) => {
     const [jobs, setJobs ] = useState([]);
@@ -9,8 +9,16 @@ const JobListingDashboard = ({ filter }) => {
     const allJobs = [
         { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" },
         { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" },
-        { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" }
-    ];
+        { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" },
+        { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" },
+        { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" },
+        { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" },
+        { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" },
+        { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" },
+        { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" },
+        { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" },
+        { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" },
+        { id: 1, company: "Seagate", title: "Data Science Intern", location: "Longmont, CO", salary: "$20/hr - $30/hr", experience: "Internship", workModel: "Onsite" }    ];
 
     useEffect(() => {
         let filteredJobs = allJobs;
@@ -34,17 +42,17 @@ const JobListingDashboard = ({ filter }) => {
     }, [filter]);
 
     return (
-        <div className="min-h-screen bg-blue-50 p-6">
-            <h1 className="text-3xl font-bold text-center mb-6">Job Listings</h1>
-            <div className="mt-4">
-                {jobs.length === 0 ? (
-                    <p>No jobs found based on your filteres.</p>
-                ) : (
-                    jobs.map((job) => (
-                        <JobCard key={job.id} job={job} />
-                    ))
-                )}
+        <div className="job-listing-dashboard">
+            <h1>Job Listings</h1>
+            {jobs.length === 0 ? (
+                <p className="no-results">No jobs found based on your filters.</p>
+            ) : (
+                <div className="results-container">
+                {jobs.map((job) => (
+                    <JobCard key={job.id} job={job} />
+                ))}
             </div>
+            )}
         </div>
     );
 };

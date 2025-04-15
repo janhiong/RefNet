@@ -30,7 +30,7 @@ const User = mongoose.model('User', userSchema);
 // Resume Schema
 const resumeSchema = new mongoose.Schema({
   resumeUrl: {type: String, required: true, unique: true},
-  belongsToUser: {type: String, required: true},
+  belongsToUser: {type: String, required: true, unique: true},
 })
 const Resume = mongoose.model('Resume', resumeSchema)
 
@@ -65,10 +65,14 @@ app.post('/api/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        const id = user._id
+        const userForToken = {
+          userId: user._id,
+          password: user.password
+        }
 
-        res.json({ token, id, user: { email: user.email } });
+        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.json({ token, user: { email: user.email } });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
@@ -105,16 +109,54 @@ const fileStorageEngine = multer.diskStorage({
 
 const upload = multer({ storage: fileStorageEngine });
 
-// Resume Route
+// Resume Routes
+app.get('/api/upload-resume', async (req, res) => {
+  res.status(200)
+})
+
 app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
+  const authenticationHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
+  
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
   const resumeUrl = await req.file.path
 
-  // const userID = 
+  const resume = await Resume.findOne({belongsToUser: decoded.userId})
 
-  // const resume = new Resume({ resumeUrl: `./${resumeUrl}`, belongsToUser: userID})
-  // await resume.save()
+  if (resume) {
+    resume.resumeUrl = resumeUrl
+    await resume.save()
+  }
+  else {
+    await Resume.create({
+      resumeUrl,
+      belongsToUser: decoded.userId,
+    })
+  }
 
   res.json({path: resumeUrl})
+})
+
+app.get('/api/users', async (req, res) => {
+  const users = await User.find({})
+  res.json(users)
+})
+
+app.get('/api/resumes', async (req, res) => {
+  const resumes = await Resume.find({}) 
+  res.json(resumes)
+})
+
+app.get('/api/resumes/:id', async (req, res) => {
+  const userId = req.params.id
+  const resume = await Resume.findOne({belongsToUser: userId})
+  
+  if (!resume) {
+    res.json({error: 'User does not exist'})
+  }
+
+  res.json({path: resume.resumeUrl})
 })
 
 // Start Server

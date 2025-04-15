@@ -16,7 +16,6 @@ const UploadResume = () => {
     if (selectedFile) {
       setFile(selectedFile);
 
-      // Generate preview URL for PDF files
       if (selectedFile.type === "application/pdf") {
         const fileURL = URL.createObjectURL(selectedFile);
         setPreviewURL(fileURL);
@@ -25,18 +24,26 @@ const UploadResume = () => {
       }
     }
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (file) {
+      const userToken = localStorage.getItem("token")
+      if (!userToken) {
+        alert("You are not logged in!")
+        return
+      }
       try {
         const data = new FormData()
-
         data.append('image',file)
         
+        const userToken = localStorage.getItem("token")
         const res = await fetch('http://localhost:4000/api/upload-resume', {
           method: 'POST',
           body: data,
+          headers: {
+            'Authorization': `Bearer ${userToken}`,
+          },
         })
 
         const result = await res.json()
@@ -58,27 +65,8 @@ const UploadResume = () => {
       <h2>Upload Your Resume</h2>
       <p>Select a PDF or DOCX file to showcase your experience.</p>
       
-      {/* File Input */}
       <input type="file" accept=".pdf,.docx" onChange={handleFileChange} />
       <button onClick={handleSubmit}>Submit</button>
-
-      {/* Display Uploaded Resume */}
-      
-      {/* {file && (
-        <div className="resume-preview">
-          <h3>Uploaded Resume: {file.name}</h3>
-          {previewURL ? (
-            <iframe
-              src={previewURL}
-              width="100%"
-              height="500px"
-              title="Resume Preview"
-            ></iframe>
-          ) : (
-            <p>(Preview not available for this file type)</p>
-          )}
-        </div>
-      )} */}
 
       <div className="">
         <iframe src={resumeUrl} width="100%" height="500px" title="Resume Preview"></iframe>

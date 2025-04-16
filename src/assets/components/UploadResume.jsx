@@ -2,9 +2,17 @@ import { useState, useEffect } from "react";
 
 const UploadResume = () => {
   const [file, setFile] = useState(null);
-  const [textExtract, setTextExtract] = useState("")
   const [previewURL, setPreviewURL] = useState(null);
   const [resumeUrl, setResumeUrl] = useState(null)
+  const [user, setUser] = useState(null)
+
+
+  useEffect(() => {
+    const userLoggedin = window.localStorage.getItem('token')
+    if (userLoggedin) {
+      setUser(userLoggedin)
+    }
+  }, [])
 
   useEffect(() => {
     loadResume()
@@ -92,7 +100,7 @@ const UploadResume = () => {
       <button onClick={handleSubmit}>Submit</button>
 
       <div className="">
-        <iframe src={resumeUrl} width="100%" height="500px" title="Resume Preview"></iframe>
+        {user ? <iframe src={resumeUrl} width="100%" height="500px" title="Resume Preview"></iframe> : <p> Please Log in to view your Resume</p>}
       </div>
     </div>
   );

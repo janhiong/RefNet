@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom"
 import "./App.css";
 import { SearchBar } from "./assets/components/SearchBar";
 import JobListingDashboard from "./assets/components/JobListingDashboard";
@@ -15,8 +16,17 @@ function App() {
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [filter, setFilter] = useState({});
   const [results, setResults] = useState([]);
-  
-  const user = localStorage.getItem("token")
+  const [user, setUser] = useState(null)
+  const param = useParams()
+
+
+
+  useEffect(() => {
+    const userLoggedin = window.localStorage.getItem('token')
+    if (userLoggedin) {
+      setUser(userLoggedin)
+    }
+  }, [])
 
   const handleSearch = (filterData) => {
     setFilter(filterData);
@@ -61,7 +71,7 @@ function App() {
           <Route path="/logout" element={user ? <Logout /> : <Navigate to="/login" />} />
           <Route path="/signup" element={user ? <Navigate to="/" /> : <Signup />} />
           <Route path="/friend-requests" element={<FriendRequest />} />
-          <Route path="/resumes/:id" element={<Resume/>} />
+          <Route path="/resumes/:id" element={<Resume />} />
         </Routes>
       </div>
     </Router>

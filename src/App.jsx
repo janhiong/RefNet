@@ -9,7 +9,7 @@ import Login from "./assets/components/Login";
 import Logout from "./assets/components/Logout"
 import Signup from "./assets/components/Signup";
 import FriendRequest from "./assets/components/FriendRequest";
-
+import Resume from './assets/components/Resume'
 
 function App() {
   const [sidebarVisible, setSidebarVisible] = useState(false);
@@ -61,6 +61,7 @@ function App() {
           <Route path="/logout" element={user ? <Logout /> : <Navigate to="/login" />} />
           <Route path="/signup" element={user ? <Navigate to="/" /> : <Signup />} />
           <Route path="/friend-requests" element={<FriendRequest />} />
+          <Route path="/resumes/:id" element={<Resume/>} />
         </Routes>
       </div>
     </Router>

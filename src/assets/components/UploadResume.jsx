@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const UploadResume = () => {
   const [file, setFile] = useState(null);
@@ -7,8 +7,29 @@ const UploadResume = () => {
   const [resumeUrl, setResumeUrl] = useState(null)
 
   useEffect(() => {
-
+    loadResume()
   })
+
+  const loadResume = async () => {
+    const userToken = localStorage.getItem("token")
+    if (userToken) {
+      const res = await fetch('http://localhost:4000/api/my-resume', {
+        method: 'POST',
+        body: userToken,
+        headers: {
+          'Authorization': `Bearer ${userToken}`,
+        }
+      })
+
+      const result = await res.json()
+      const url = result.path
+
+      setResumeUrl(`./${url}`)
+    }
+    else {
+      console.log('User is not logged in')
+    }
+  }
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -24,7 +45,7 @@ const UploadResume = () => {
       }
     }
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (file) {
@@ -51,11 +72,13 @@ const UploadResume = () => {
         
         setResumeUrl(`./${url}`)
       }
-      catch (err) {
+      catch (err)
+      {
         console.log(err)
       }
     
-    } else {
+    }
+    else {
       alert("Please select a file first!");
     }
   };
@@ -71,7 +94,6 @@ const UploadResume = () => {
       <div className="">
         <iframe src={resumeUrl} width="100%" height="500px" title="Resume Preview"></iframe>
       </div>
-
     </div>
   );
 };

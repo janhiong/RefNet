@@ -28,19 +28,17 @@ function App() {
     }
   }, [])
 
-  const [sidebarVisible, setSidebarVisible] = useState(false); // toggle sidebar
-  const [filter, setFilter] = useState({}); // active filter object
+  const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [filter, setFilter] = useState({});
 
-  // Handle advanced filter form submission
   const handleSearch = (filterData) => {
     setFilter(filterData);
-    setSidebarVisible(false); // close sidebar after applying
+    setSidebarVisible(false);
   };
 
   return (
     <Router>
       <div className="App">
-        {/* 🔗 Top Navigation */}
         <nav className="navbar">
           <Link to="/">Job Listing</Link>
           <Link to="/friend-requests">Friend Requests</Link>
@@ -48,13 +46,11 @@ function App() {
           {user ? <Link to="/logout">Logout</Link> : <Link to="/login">Login</Link>}
         </nav>
 
-        {/* 📍 Main Routes */}
         <Routes>
           <Route
             path="/"
             element={
               <>
-                {/* 🔍 Search Bar & Advanced Filter Toggle */}
                 <div className="search-and-filters">
                   <SearchBar setSidebarVisible={setSidebarVisible} />
 
@@ -64,8 +60,6 @@ function App() {
                     </div>
                   )}
                 </div>
-
-                {/* 🧠 Job List, filtered by user input */}
                 <JobListingDashboard filter={filter} />
               </>
             }
@@ -74,7 +68,6 @@ function App() {
           <Route path="/upload-resume" element={<UploadResume />} />
           <Route path="/friend-requests" element={<FriendRequest />} />
 
-          {/* 🔐 Auth Routes */}
           <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
           <Route path="/logout" element={user ? <Logout /> : <Navigate to="/login" />} />
           <Route path="/signup" element={user ? <Navigate to="/" /> : <Signup />} />

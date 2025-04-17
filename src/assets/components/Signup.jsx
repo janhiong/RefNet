@@ -22,9 +22,14 @@ const Signup = () => {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
+      
+      localStorage.setItem("token", data.token);
 
       setSuccess("Account created successfully!");
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => {
+        navigate("/login")
+        window.location.reload()
+      }, 2000);
     } catch (err) {
       setError(err.message);
     }

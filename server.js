@@ -49,7 +49,14 @@ app.post('/api/signup', async (req, res) => {
         user = new User({ email, password: hashedPassword });
         await user.save();
 
-        res.status(201).json({ message: 'User registered successfully' });
+        const userForToken = {
+          userId: user._id,
+          password: user.password
+        }
+
+        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.status(201).json({token, message: 'User registered successfully', });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }

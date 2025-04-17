@@ -19,26 +19,6 @@
   right: 20px;
 }
 
-.upload-resume-btn {
-  padding: 10px 15px;
-  border: none;
-  background: #4CAF50;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
-  text-decoration: none; /* Removes underline from Link */
-  transition: background 0.3s;
-}
-
-.upload-resume-btn:hover {
-  background: #45a049;
-}
-.upload-resume-container {
-  text-align: center;
-  margin-top: 50px;
-}
-
 .resume-preview {
   margin-top: 20px;
   border: 1px solid #ccc;

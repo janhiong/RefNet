@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "./UploadResume.css"
 
 const UploadResume = () => {
   const [file, setFile] = useState(null);
@@ -92,17 +93,20 @@ const UploadResume = () => {
   };
 
   return (
-    <div className="upload-resume-container">
-      <h2>Upload Your Resume</h2>
-      <p>Select a PDF or DOCX file to showcase your experience.</p>
-      
-      <input type="file" accept=".pdf,.docx" onChange={handleFileChange} />
-      <button onClick={handleSubmit}>Submit</button>
-
-      <div className="">
+    <>
+      <div className="upload-resume-container">
+        <p className="upload-resume-title">Upload Your Resume</p>
+        <p className="upload-resume-label">Select a PDF or DOCX file to showcase your experience.</p>
+        
+        <div>
+          <input type="file" accept=".pdf,.docx" onChange={handleFileChange} />
+          <button onClick={handleSubmit} className="upload-resume-btn">Submit</button>
+        </div>
+      </div>
+      <div className="resume-display-container">
         {user ? <iframe src={resumeUrl} width="100%" height="500px" title="Resume Preview"></iframe> : <p> Please Log in to view your Resume</p>}
       </div>
-    </div>
+    </>
   );
 };
 

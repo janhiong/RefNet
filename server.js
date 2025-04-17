@@ -110,8 +110,16 @@ const fileStorageEngine = multer.diskStorage({
 const upload = multer({ storage: fileStorageEngine });
 
 // Resume Routes
-app.get('/api/upload-resume', async (req, res) => {
-  res.status(200)
+app.post('/api/my-resume', async (req, res) => {
+  const authenticationHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  const resume = await Resume.findOne({belongsToUser: decoded.userId})
+  const resumeUrl = resume.resumeUrl
+
+  res.json({path: resumeUrl})
 })
 
 app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
@@ -138,6 +146,7 @@ app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
   res.json({path: resumeUrl})
 })
 
+// Display all
 app.get('/api/users', async (req, res) => {
   const users = await User.find({})
   res.json(users)
@@ -154,6 +163,7 @@ app.get('/api/resumes/:id', async (req, res) => {
   
   if (!resume) {
     res.json({error: 'User does not exist'})
+    return
   }
 
   res.json({path: resume.resumeUrl})

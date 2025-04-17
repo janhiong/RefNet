@@ -7,7 +7,6 @@ const Resume = () => {
 
   useEffect(() => {
     loadResume()
-    console.log(param.id)
   })
 
   const loadResume = async () => {
@@ -18,13 +17,15 @@ const Resume = () => {
     const result = await res.json()
     const url = result.path
 
-    setResumeUrl(`./${url}`)
+    console.log(url)
+
+    setResumeUrl(`http://localhost:4000/${url}`)
   }
   
   return (
     <>
       <div className="">
-        <iframe src={resumeUrl} width="100%" height="500px" title="Resume Preview"></iframe>
+        <iframe src={resumeUrl} width="100%" height="700px" title="Resume Preview"></iframe>
       </div>
     </>
   )

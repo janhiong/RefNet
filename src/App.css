@@ -1,5 +1,7 @@
 .App {
   background-color: #dbedf7;
+  background-size: contain;
+  background-attachment: fixed;
   height: 100vh;
   width: 100vw;
 }

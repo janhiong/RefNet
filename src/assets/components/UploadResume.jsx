@@ -108,8 +108,8 @@ const UploadResume = () => {
           <button onClick={handleSubmit} className="upload-resume-btn">Submit</button>
           {!user && <p className="login-to-view-resume-label"> * Please log in to view your resume</p>}
         </div>
-        <div className="resume-display-container">
-          {(user && resumeUrl) && <a href={resumeUrl} width="100%" height="500px" title="Resume Preview" className="resume-link">View Your Resume</a>}
+        <div className="resume-button-container">
+          {(user && resumeUrl) && <a href={resumeUrl} width="100%" height="500px" title="Resume Preview" className="resume-link">View Current Resume</a>}
           {(user && !resumeUrl) && <p>You currently have no resume uploaded.</p>}
         </div>
       </div>

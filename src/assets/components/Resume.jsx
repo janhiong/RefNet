@@ -24,8 +24,8 @@ const Resume = () => {
   
   return (
     <>
-      <div className="">
-        <iframe src={resumeUrl} width="100%" height="700px" title="Resume Preview"></iframe>
+      <div className="upload-resume-container">
+        {resumeUrl && <a href={resumeUrl} width="100%" height="500px" title="Resume Preview" className="resume-link">View this person's resume</a>}
       </div>
     </>
   )

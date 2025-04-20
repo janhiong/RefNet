@@ -4,6 +4,14 @@
   align-items: center;
 }
 
+.pfp-container {
+  margin: 20px;
+}
+
+.pfp-avatar {
+  border-radius: 50%;
+}
+
 .upload-resume-container {
   margin: auto;
   display: flex;
@@ -68,26 +76,28 @@ input[type="file"]::file-selector-button {
   transition: hover, 0.3s;
 }
 
-.resume-display-container {
-  margin: 40px;
+.resume-button-container {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.resume-link {
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 20px;
+  color: black;
+  transition: hover, 0.3s;
+}
+
+.resume-link:hover {
+  border: 1px solid #027bff;
+  color: #027bff;
 }
 
 .login-to-view-resume-label {
   color: red;
   margin-top: 15px;
   margin-bottom: 5px;
-}
-
-.resume-link {
-  margin: none;
-  text-decoration: none;
-  font-size: 20px;
-  color: black;
-}
-
-.resume-link:hover {
-  color: blue;
-}
-.resume-link:visited {
-  color: black;
 }

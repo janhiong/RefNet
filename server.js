@@ -35,6 +35,13 @@ const resumeSchema = new mongoose.Schema({
 })
 const Resume = mongoose.model('Resume', resumeSchema)
 
+// Profile Picture Schema
+const avatarSchema = new mongoose.Schema({
+  avatarUrl: {type: String, required: true, unique: true},
+  belongsToUser: {type: String, required: true, unique: true},
+})
+const Avatar = mongoose.model('Avatar', avatarSchema)
+
 // Signup Route
 app.post('/api/signup', async (req, res) => {
     const { email, password } = req.body;

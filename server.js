@@ -125,13 +125,23 @@ app.post('/api/my-resume', async (req, res) => {
   const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
   const resume = await Resume.findOne({belongsToUser: decoded.userId})
-  const resumeUrl = resume.resumeUrl
 
+  if (!resume) {
+    console.log('The user has no resume')
+    return
+  }
+
+  const resumeUrl = resume.resumeUrl
   res.json({path: resumeUrl})
 })
 
 app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
   const authenticationHeader = req.headers['authorization']
+  
+  if (!authenticationHeader) {
+    return res.status(401).json({ error: 'No authorization header' })
+  }
+
   const token = authenticationHeader.split(' ')[1]
   
   const decoded = jwt.verify(token, process.env.JWT_SECRET)

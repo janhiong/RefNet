@@ -69,5 +69,25 @@ input[type="file"]::file-selector-button {
 }
 
 .resume-display-container {
-  
+  margin: 40px;
+}
+
+.login-to-view-resume-label {
+  color: red;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.resume-link {
+  margin: none;
+  text-decoration: none;
+  font-size: 20px;
+  color: black;
+}
+
+.resume-link:hover {
+  color: blue;
+}
+.resume-link:visited {
+  color: black;
 }

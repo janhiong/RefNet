@@ -20,23 +20,28 @@ const UploadResume = () => {
   })
 
   const loadResume = async () => {
-    const userToken = localStorage.getItem("token")
-    if (userToken) {
-      const res = await fetch('http://localhost:4000/api/my-resume', {
-        method: 'POST',
-        body: userToken,
-        headers: {
-          'Authorization': `Bearer ${userToken}`,
-        }
-      })
-
-      const result = await res.json()
-      const url = result.path
-
-      setResumeUrl(`./${url}`)
+    try {
+      const userToken = localStorage.getItem("token")
+      if (userToken) {
+        const res = await fetch('http://localhost:4000/api/my-resume', {
+          method: 'POST',
+          body: userToken,
+          headers: {
+            'Authorization': `Bearer ${userToken}`,
+          }
+        })
+  
+        const result = await res.json()
+        const url = result.path
+  
+        setResumeUrl(`./${url}`)
+      }
+      else {
+        console.log('User is not logged in')
+      }
     }
-    else {
-      console.log('User is not logged in')
+    catch (error) {
+      console.log("User does not have a resume")
     }
   }
 
@@ -101,10 +106,12 @@ const UploadResume = () => {
         <div>
           <input type="file" accept=".pdf,.docx" onChange={handleFileChange} />
           <button onClick={handleSubmit} className="upload-resume-btn">Submit</button>
+          {!user && <p className="login-to-view-resume-label"> * Please log in to view your resume</p>}
         </div>
-      </div>
-      <div className="resume-display-container">
-        {user ? <iframe src={resumeUrl} width="100%" height="500px" title="Resume Preview"></iframe> : <p> Please Log in to view your Resume</p>}
+        <div className="resume-display-container">
+          {(user && resumeUrl) && <a href={resumeUrl} width="100%" height="500px" title="Resume Preview" className="resume-link">View Your Resume</a>}
+          {(user && !resumeUrl) && <p>You currently have no resume uploaded.</p>}
+        </div>
       </div>
     </>
   );

@@ -1,57 +1,99 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .App {
-  background-color: #dbedf7;
+  background: linear-gradient(to bottom, #b0e0e6, #ffffff);
   background-size: contain;
   background-attachment: fixed;
   height: 100vh;
   width: 100vw;
+  text-align: center;
+  padding: 40px 20px;
 }
 
-.search-bar-container {
-  padding-top: 20vh;
-  width: 40%;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 200px;
-}
-.top-right-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
+
+.header h1 {
+  font-size: 80px;
+  font-weight: 900;
+  margin-bottom: 40px;
+  color: #2f4f4f;
 }
 
-.resume-preview {
-  margin-top: 20px;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+.header p {
+  font-size: 20px;
+  color: #2f4f4f;
+  max-width: 1000px;
+  margin: 0 auto 40px auto;
 }
 
-.resume-preview iframe {
-  border: none;
-}
-
-.navbar {
-  background: #007bff;
-  padding: 10px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.navbar a {
+.signin-btn {
+  background-color: #2f4f4f;
   color: white;
-  text-decoration: none;
+  border: none;
+  padding: 14px 28px;
   font-size: 16px;
-  padding: 10px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+.signup-btn {
+  background-color: #2f4f4f;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-right: 10px;
 }
 
-.navbar a:hover {
-  background: #0056b3;
-  border-radius: 5px;
+.signin-btn:hover {
+  background-color: #498888 ;
 }
+
+.signup-btn:hover {
+  background-color: #498888 ;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 50px;
+  padding: 0 20px;
+}
+.feature-card {
+  background-color: none;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px 20px;
+  width: 250px;
+  text-align: center;
+}
+
+.feature-card .emoji {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.feature-card h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #2f4f4f;
+}
+
+.feature-card p {
+  font-size: 14px;
+  color: #2f4f4f;
+}
+
+
 
 
 

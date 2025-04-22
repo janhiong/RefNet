@@ -2,12 +2,41 @@ import React, { useState, useEffect } from "react";
 import JobCard from "./JobCard";
 import "./JobListingDashoard.css";
 
-const JobListingDashboard = ({ filter }) => {
+// ✅ Mock data in case API fails
+const mockJobs = [
+  {
+    id: 1,
+    title: "Data Engineer",
+    organization: "Lensa",
+    locations_derived: ["New York"],
+    employment_type: ["Full-Time"],
+    date_posted: "2024-04-10"
+  },
+  {
+    id: 2,
+    title: "Software Engineer",
+    organization: "Google",
+    locations_derived: ["California"],
+    employment_type: ["Remote"],
+    date_posted: "2024-04-09"
+  },
+  {
+    id: 3,
+    title: "Data Scientist",
+    organization: "Amazon",
+    locations_derived: ["Texas"],
+    employment_type: ["Hybrid"],
+    date_posted: "2024-04-05"
+  }
+];
+
+const JobListingDashboard = ({ filter = {} }) => {
   const [allJobs, setAllJobs] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState(false);
 
-  // ✅ Fetch jobs from API
+  // ✅ Fetch jobs from API or use mock data
   useEffect(() => {
     const fetchJobs = async () => {
       setLoading(true);
@@ -27,13 +56,11 @@ const JobListingDashboard = ({ filter }) => {
           }
         });
 
+        if (!res.ok) throw new Error("API quota exceeded");
         const json = await res.json();
-        console.log("Jobs:", json);
 
-        // ✅ Handle array or object API formats
         const jobList = Array.isArray(json) ? json : json?.data || [];
 
-        // ✅ Optional: remove duplicates by title + organization
         const uniqueJobs = [];
         const seen = new Set();
         for (const job of jobList) {
@@ -47,9 +74,10 @@ const JobListingDashboard = ({ filter }) => {
         setAllJobs(uniqueJobs);
         setJobs(uniqueJobs);
       } catch (error) {
-        console.error("API fetch failed:", error);
-        setAllJobs([]);
-        setJobs([]);
+        console.warn("Falling back to mock data:", error.message);
+        setAllJobs(mockJobs);
+        setJobs(mockJobs);
+        setApiError(true);
       } finally {
         setLoading(false);
       }
@@ -58,11 +86,11 @@ const JobListingDashboard = ({ filter }) => {
     fetchJobs();
   }, []);
 
-  // ✅ Apply filters when `filter` or `allJobs` changes
+  // ✅ Apply filters
   useEffect(() => {
     if (!Array.isArray(allJobs)) return;
 
-    let filtered = [...allJobs];
+    let filteredJobs = [...allJobs];
 
     if (filter.company) {
       filteredJobs = filteredJobs.filter((job) =>
@@ -85,20 +113,23 @@ const JobListingDashboard = ({ filter }) => {
       );
     }
     if (filter.datePosted === "last-7-days") {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
       filteredJobs = filteredJobs.filter((job) => {
         const jobDate = new Date(job.date_posted);
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
         return jobDate >= sevenDaysAgo;
       });
-    }    
+    }
 
-    setJobs(filtered);
+    setJobs(filteredJobs);
   }, [filter, allJobs]);
 
   return (
     <div className="job-listing-dashboard">
       <h1>Job Listings</h1>
+      {apiError && (
+        <p className="notice">⚠️ Showing mock job data due to API limit.</p>
+      )}
       {loading ? (
         <p className="loading">Loading jobs...</p>
       ) : jobs.length === 0 ? (
@@ -115,3 +146,4 @@ const JobListingDashboard = ({ filter }) => {
 };
 
 export default JobListingDashboard;
+

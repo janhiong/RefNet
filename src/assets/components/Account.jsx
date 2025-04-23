@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Auth.css";
 
-const Logout = () => {
+const Account = () => {
   const [error, setError] = useState("")
   const navigate = useNavigate();
 
@@ -22,4 +22,4 @@ const Logout = () => {
   )
 }
 
-export default Logout
+export default Account

@@ -9,7 +9,10 @@
 }
 
 .pfp-avatar {
-  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  background-size: cover;
+  border-radius: 15px;
 }
 
 .upload-resume-container {
@@ -42,6 +45,13 @@
   font-size: 15px;
   color: gray;
   margin-bottom: 15px;
+}
+
+.upload-success-label {
+  font-size: 15px;
+  color: green;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .upload-resume-btn {
@@ -77,6 +87,8 @@ input[type="file"]::file-selector-button {
 }
 
 .resume-button-container {
+  display: flex;
+  flex-direction: column;
   margin-top: 20px;
   margin-bottom: 10px;
 }

@@ -9,7 +9,7 @@ import JobListingDashboard from "./assets/components/JobListingDashboard";
 import AdvancedSearch from "./assets/components/AdvancedSearch";
 import UploadResume from "./assets/components/UploadResume";
 import Login from "./assets/components/Login";
-import Logout from "./assets/components/Logout";
+import Account from "./assets/components/Account";
 import Signup from "./assets/components/Signup";
 import FriendRequest from "./assets/components/FriendRequest";
 import Resume from './assets/components/Resume'
@@ -43,7 +43,7 @@ function App() {
           <Link to="/">Job Listing</Link>
           <Link to="/friend-requests">Friend Requests</Link>
           <Link to="/upload-resume">Upload Resume</Link>
-          {user ? <Link to="/logout">Logout</Link> : <Link to="/login">Login</Link>}
+          {user ? <Link to="/account">Account</Link> : <Link to="/login">Login</Link>}
         </nav>
 
         <Routes>
@@ -69,7 +69,7 @@ function App() {
           <Route path="/friend-requests" element={<FriendRequest />} />
 
           <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-          <Route path="/logout" element={user ? <Logout /> : <Navigate to="/login" />} />
+          <Route path="/account" element={user ? <Account /> : <Navigate to="/login" />} />
           <Route path="/signup" element={user ? <Navigate to="/" /> : <Signup />} />
           <Route path="/friend-requests" element={<FriendRequest />} />
           <Route path="/resumes/:id" element={<Resume />} />

@@ -194,6 +194,53 @@ app.get('/api/resumes/:id', async (req, res) => {
   res.json({path: resume.resumeUrl})
 })
 
+// Avatar Routes
+app.post('/api/my-profileouc', async (req, res) => {
+  const authenticationHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  const avatar = await Avatar.findOne({belongsToUser: decoded.userId})
+
+  if(!avatar) {
+    console.log('The user has no avatar')
+    return
+  }
+
+  const avatarUrl = avatar.avatarUrl
+  res.json({path: avatarUrl})
+})
+
+app.post('api/upload-avatar', upload.single('images-pfps'), async (req, res) => {
+  const authenticationHeader = req.headers['authorization']
+  
+  if (!authenticationHeader) {
+    return res.status(401).json({ error: 'No authorization header' })
+  }
+
+  const token = authenticationheader.split(' ')[1]
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  const avatarUrl = await req.file.path
+
+  const avatar = await Avatar.findOne({belongsToUser: decoded.userId})
+
+  if(avatar) {
+    avatar.avatarUrl = avatarUrl
+    await avatar.save()
+  }
+  else {
+    await Avatar.create({
+      avatarUrl,
+      belongsToUser: decoded.userId
+    })
+  }
+
+  res.json({path: avatarUrl})
+})
+
 // Start Server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

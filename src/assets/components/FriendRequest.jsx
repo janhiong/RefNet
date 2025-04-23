@@ -1,69 +1,51 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from 'react';
 import "./FriendRequest.css";
+import placeholder from '../images/placeholderperson.jpg';
 
-const FriendRequest = () => {
-  const [users, setUsers] = useState([]);
-  const [sentRequests, setSentRequests] = useState([]);
-  const [receivedRequests, setReceivedRequests] = useState([]);
-  const [connections, setConnections] = useState([]);
 
-  // Fetch users (simulated API)
+const App = () => {
+  const [friends, setFriends] = useState([]);
+
   useEffect(() => {
-    fetch("http://localhost:4000/api/users")
-      .then((response) => response.json())
-      .then((data) => setUsers(data));
-  }, []);
+    fetch('http://localhost:4000/api/emails')
+      .then(res => res.json())
+      .then(data => {
+        const mappedData = data.map((item, index) => ({
+          id: index + 1, 
+          name: item.email, 
+          requestSent: false, 
+          image: placeholder, 
+        }));
+        setFriends(mappedData);
+      })
+      .catch(err => console.error('Error fetching emails:', err));
+  }, []); 
 
-  // Send Connection Request
-  const sendRequest = (user) => {
-    if (!sentRequests.includes(user.id)) {
-      setSentRequests([...sentRequests, user.id]);
-    }
-  };
-
-  // Accept Connection Request
-  const acceptRequest = (user) => {
-    setConnections([...connections, user]);
-    setReceivedRequests(receivedRequests.filter((id) => id !== user.id));
+  const handleSendRequest = (index) => {
+    const updatedFriends = [...friends];
+    updatedFriends[index].requestSent = true; // Mark the friend as having a request sent
+    setFriends(updatedFriends);
+    console.log(index)
   };
 
   return (
-    <div className="friend-request-container">
-      <h2>Connect with People</h2>
-      
-      <h3>Suggested Users</h3>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            {user.name} ({user.email})
-            <button
-              onClick={() => sendRequest(user)}
-              disabled={sentRequests.includes(user.id)}
-            >
-              {sentRequests.includes(user.id) ? "Request Sent" : "Connect"}
-            </button>
-          </li>
+    <div className="friends-list">
+      <h2>Recommended Connections</h2>
+      <div className="grid">
+        {friends.map((friend, index) => (
+          <div key={friend.id} className="friend-box">
+            <img src={friend.image} alt={friend.name} className="friend-image" />
+            <p>{friend.name}</p>
+            {friend.requestSent ? (
+              <button disabled>Request Sent</button>
+            ) : (
+              <button onClick={() => handleSendRequest(index)}>Send Request</button>
+            )}
+          </div>
         ))}
-      </ul>
-      
-      <h3>Pending Requests</h3>
-      <ul>
-        {users.filter(user => receivedRequests.includes(user.id)).map((user) => (
-          <li key={user.id}>
-            {user.name} ({user.email})
-            <button onClick={() => acceptRequest(user)}>Accept</button>
-          </li>
-        ))}
-      </ul>
-
-      <h3>Your Connections</h3>
-      <ul>
-        {connections.map((user) => (
-          <li key={user.id}>{user.name} ({user.email})</li>
-        ))}
-      </ul>
+      </div>
     </div>
   );
 };
 
-export default FriendRequest;
+export default App;

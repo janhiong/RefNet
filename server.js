@@ -82,6 +82,20 @@ app.get("/api/search-users", async (req, res) => {
     }
   });  
 
+
+  app.get('/api/emails', async (req, res) => {
+    try {
+      // Get all users, but only return their email field
+      const users = await User.find().select('email');
+  
+      res.json(users); // Sends an array of { _id, email } objects
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+
+
 // Start Server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

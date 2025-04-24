@@ -4,6 +4,7 @@ import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import multer from 'multer';
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use('/images', express.static('images'));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -22,9 +24,23 @@ mongoose.connect(process.env.MONGO_URI, {
 // User Schema
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
 });
 const User = mongoose.model('User', userSchema);
+
+// Resume Schema
+const resumeSchema = new mongoose.Schema({
+  resumeUrl: {type: String, required: true, unique: true},
+  belongsToUser: {type: String, required: true, unique: true},
+})
+const Resume = mongoose.model('Resume', resumeSchema)
+
+// Profile Picture Schema
+const avatarSchema = new mongoose.Schema({
+  avatarUrl: {type: String, required: true, unique: true},
+  belongsToUser: {type: String, required: true, unique: true},
+})
+const Avatar = mongoose.model('Avatar', avatarSchema)
 
 // Signup Route
 app.post('/api/signup', async (req, res) => {
@@ -40,7 +56,14 @@ app.post('/api/signup', async (req, res) => {
         user = new User({ email, password: hashedPassword });
         await user.save();
 
-        res.status(201).json({ message: 'User registered successfully' });
+        const userForToken = {
+          userId: user._id,
+          password: user.password
+        }
+
+        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        res.status(201).json({token, message: 'User registered successfully', });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
@@ -57,23 +80,30 @@ app.post('/api/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const userForToken = {
+          userId: user._id,
+          password: user.password
+        }
+
+        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+
         res.json({ token, user: { email: user.email } });
     } catch (error) {
         res.status(500).json({ message: 'Server error' });
     }
 });
 
-app.get("/api/search-users", async (req, res) => {
+// Search Users Logic
+app.get('/api/search-users', async (req, res) => {
     try {
-      const { query } = req.query; // Get the search query from frontend
+      const { query } = req.query;
   
       if (!query) {
-        return res.json([]); // Return empty array if no query
+        return res.json([]);
       }
   
       const users = await User.find({
-        name: { $regex: query, $options: "i" }, // Case-insensitive search
+        name: { $regex: query, $options: "i" },
       });
   
       res.json(users);
@@ -82,19 +112,87 @@ app.get("/api/search-users", async (req, res) => {
     }
   });  
 
+// Handle Upload Resume Logic 
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './images')
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '--' + file.originalname)
+  }
+})
 
-  app.get('/api/emails', async (req, res) => {
-    try {
-      // Get all users, but only return their email field
-      const users = await User.find().select('email');
+const upload = multer({ storage: fileStorageEngine });
+
+// Resume Routes
+app.post('/api/my-resume', async (req, res) => {
+  const authenticationHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  const resume = await Resume.findOne({belongsToUser: decoded.userId})
+
+  if (!resume) {
+    console.log('The user has no resume')
+    return
+  }
+
+  const resumeUrl = resume.resumeUrl
+  res.json({path: resumeUrl})
+})
+
+app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
+  const authenticationHeader = req.headers['authorization']
   
-      res.json(users); // Sends an array of { _id, email } objects
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ message: 'Server error' });
-    }
-  });
+  if (!authenticationHeader) {
+    return res.status(401).json({ error: 'No authorization header' })
+  }
 
+  const token = authenticationHeader.split(' ')[1]
+  
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  const resumeUrl = await req.file.path
+
+  const resume = await Resume.findOne({belongsToUser: decoded.userId})
+
+  if (resume) {
+    resume.resumeUrl = resumeUrl
+    await resume.save()
+  }
+  else {
+    await Resume.create({
+      resumeUrl,
+      belongsToUser: decoded.userId,
+    })
+  }
+
+  res.json({path: resumeUrl})
+})
+
+// Display all
+app.get('/api/users', async (req, res) => {
+  const users = await User.find({})
+  res.json(users)
+})
+
+app.get('/api/resumes', async (req, res) => {
+  const resumes = await Resume.find({}) 
+  res.json(resumes)
+})
+
+app.get('/api/resumes/:id', async (req, res) => {
+  const userId = req.params.id
+  const resume = await Resume.findOne({belongsToUser: userId})
+  
+  if (!resume) {
+    res.json({error: 'User does not exist'})
+    return
+  }
+
+  res.json({path: resume.resumeUrl})
+})
 
 // Start Server
 const PORT = process.env.PORT || 4000;

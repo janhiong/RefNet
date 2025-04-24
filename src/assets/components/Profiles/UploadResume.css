@@ -1,0 +1,103 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pfp-container {
+  margin: 20px;
+}
+
+.pfp-avatar {
+  border-radius: 50%;
+}
+
+.upload-resume-container {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  background-color: white;
+  width: max-content;
+  border-radius: 15px;
+}
+
+.resume-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-resume-title {
+  font-size: 25px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.upload-resume-label {
+  font-size: 15px;
+  color: gray;
+  margin-bottom: 15px;
+}
+
+.upload-resume-btn {
+  padding: 10px 15px;
+  border: none;
+  background: #027bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  text-decoration: none; /* Removes underline from Link */
+  transition: hover, 0.3s;
+}
+
+.upload-resume-btn:hover {
+  background: #51a5ff;
+}
+.upload-resume-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+input[type="file"]::file-selector-button {
+  padding: 10px 15px;
+  border: none;
+  background: #027bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  text-decoration: none; /* Removes underline from Link */
+  transition: hover, 0.3s;
+}
+
+.resume-button-container {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.resume-link {
+  padding: 10px;
+  border: 1px solid gray;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 20px;
+  color: black;
+  transition: hover, 0.3s;
+}
+
+.resume-link:hover {
+  border: 1px solid #027bff;
+  color: #027bff;
+}
+
+.login-to-view-resume-label {
+  color: red;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}

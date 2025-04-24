@@ -4,6 +4,7 @@ import "./UploadResume.css"
 const UploadResume = () => {
   const [file, setFile] = useState(null)
   const [previewURL, setPreviewURL] = useState(null)
+  const [avatarUrl, setAvatarUrl] = useState(null)
   const [resumeUrl, setResumeUrl] = useState(null)
   const [user, setUser] = useState(null)
   const [uploadSuccessMessage, setUploadSuccessMessage] = useState('')
@@ -19,6 +20,29 @@ const UploadResume = () => {
   useEffect(() => {
     loadResume()
   })
+  
+  const loadAvatar = async () => {
+    try {
+      const userToken = localStorage.getItem("token")
+      if (userToken) {
+        const res = await fetch('http://localhost:4000/api/my-avatar', {
+          method: 'POST',
+          body: userToken,
+          headers: {
+            'Authorization': `Bearer ${userToken}`
+          }
+        })
+
+        const result = await res.json()
+        const url = result.path
+        
+        setAvatarUrl(`./${url}`)
+      }
+    }
+    catch(error) {
+      console.log("User does not have an avatar")
+    }
+  }
 
   const loadResume = async () => {
     try {

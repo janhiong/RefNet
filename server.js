@@ -171,6 +171,24 @@ app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
   res.json({path: resumeUrl})
 })
 
+// Avatar Routes
+app.post('/api/my-avatar', async (req, res) => {
+  const authenticaionHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  const avatar = await Resume.findOne({belongsToUser: decoded.userId})
+
+  if (!avatar) {
+    console.log('The user has no avatar')
+    return
+  }
+
+  const avatarUrl = avatar.avatarUrl
+  res.json({path: avatarUrl})
+})
+
 // Display all
 app.get('/api/users', async (req, res) => {
   const users = await User.find({})

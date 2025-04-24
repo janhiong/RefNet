@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 import "./UploadResume.css"
 
 const UploadResume = () => {
-  const [file, setFile] = useState(null);
-  const [previewURL, setPreviewURL] = useState(null);
+  const [file, setFile] = useState(null)
+  const [previewURL, setPreviewURL] = useState(null)
   const [resumeUrl, setResumeUrl] = useState(null)
   const [user, setUser] = useState(null)
+  const [uploadSuccessMessage, setUploadSuccessMessage] = useState('')
 
 
   useEffect(() => {
@@ -46,21 +47,21 @@ const UploadResume = () => {
   }
 
   const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
+    const selectedFile = event.target.files[0]
 
     if (selectedFile) {
-      setFile(selectedFile);
+      setFile(selectedFile)
 
       if (selectedFile.type === "application/pdf") {
-        const fileURL = URL.createObjectURL(selectedFile);
-        setPreviewURL(fileURL);
+        const fileURL = URL.createObjectURL(selectedFile)
+        setPreviewURL(fileURL)
       } else {
-        setPreviewURL(null);
+        setPreviewURL(null)
       }
     }
-  };
+  }
 
-  const handleSubmit = async (e) => {
+  const handleResumeSubmit = async (e) => {
     e.preventDefault()
     if (file) {
       const userToken = localStorage.getItem("token")
@@ -85,7 +86,13 @@ const UploadResume = () => {
         const url = result.path
         
         setResumeUrl(`./${url}`)
+        setUploadSuccessMessage('* Upload Successful')
+
+        setTimeout(() => {
+          setUploadSuccessMessage('')
+        }, 5000)
       }
+
       catch (err)
       {
         console.log(err)
@@ -93,28 +100,46 @@ const UploadResume = () => {
     
     }
     else {
-      alert("Please select a file first!");
+      alert("Please select a file first!")
     }
-  };
+  }
+
+  const handleAvatarSubmit = async (e) => {
+    
+  }
+
 
   return (
     <>
       <div className="upload-resume-container">
+        <div className="pfp-container">
+          <img
+            src="./images-pfps/default-avatar.jpg"
+            alt=""
+            className="pfp-avatar"
+          />
+        </div>
+        <div>
+          <input type="file" accept=".pdf,.docx" onChange={handleFileChange} />
+          <button onClick={handleAvatarSubmit} className="upload-resume-btn">Submit</button>
+          {!user && <p className="login-to-view-resume-label"> * Please log in to view your resume</p>}
+        </div>
         <p className="upload-resume-title">Upload Your Resume</p>
         <p className="upload-resume-label">Select a PDF or DOCX file to showcase your experience.</p>
         
         <div>
           <input type="file" accept=".pdf,.docx" onChange={handleFileChange} />
-          <button onClick={handleSubmit} className="upload-resume-btn">Submit</button>
+          <button onClick={handleResumeSubmit} className="upload-resume-btn">Submit</button>
           {!user && <p className="login-to-view-resume-label"> * Please log in to view your resume</p>}
         </div>
         <div className="resume-button-container">
+          {uploadSuccessMessage && <p className="upload-success-label">{uploadSuccessMessage}</p>}
           {(user && resumeUrl) && <a href={resumeUrl} width="100%" height="500px" title="Resume Preview" className="resume-link">View Current Resume</a>}
           {(user && !resumeUrl) && <p>You currently have no resume uploaded.</p>}
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default UploadResume;
+export default UploadResume

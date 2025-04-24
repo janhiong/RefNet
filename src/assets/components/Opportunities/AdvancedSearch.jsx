@@ -2,19 +2,6 @@ import React, { useState } from "react";
 import Select from "react-select";
 import "./AdvancedSearch.css";
 
-const companyOptions = [
-  { value: "lensa", label: "Lensa" },
-  { value: "google", label: "Google" },
-  { value: "microsoft", label: "Microsoft" },
-  { value: "amazon", label: "Amazon" }
-];
-
-const jobTitleOptions = [
-  { value: "data engineer", label: "Data Engineer" },
-  { value: "software engineer", label: "Software Engineer" },
-  { value: "data scientist", label: "Data Scientist" }
-];
-
 const workModelOptions = [
   { value: "FULL_TIME", label: "Full-Time" },
   { value: "PART_TIME", label: "Part-Time" },
@@ -37,16 +24,16 @@ const datePostedOptions = [
 ];
 
 const AdvancedSearch = ({ onSearch }) => {
-  const [company, setCompany] = useState(null);
-  const [jobTitle, setJobTitle] = useState(null);
+  const [company, setCompany] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
   const [workModel, setWorkModel] = useState(null);
   const [location, setLocation] = useState(null);
   const [datePosted, setDatePosted] = useState(null);
 
   const handleSearch = () => {
     const filters = {
-      company: company?.value || "",
-      jobTitle: jobTitle?.value || "",
+      company: company.trim(),
+      jobTitle: jobTitle.trim(),
       workModel: workModel?.value || "",
       location: location?.value || "",
       datePosted: datePosted?.value || ""
@@ -58,12 +45,36 @@ const AdvancedSearch = ({ onSearch }) => {
   return (
     <div className="advanced-search-container">
       <div className="search-fields">
-        <Select options={companyOptions} placeholder="Select Company" value={company} onChange={setCompany} />
-        <Select options={jobTitleOptions} placeholder="Select Job Title" value={jobTitle} onChange={setJobTitle} />
-        <Select options={workModelOptions} placeholder="Select Work Model" value={workModel} onChange={setWorkModel} />
-        <Select options={locationOptions} placeholder="Select Location" value={location} onChange={setLocation} />
-        <Select options={datePostedOptions} placeholder="Date Posted" value={datePosted} onChange={setDatePosted} />
-        <button className="search-button" onClick={handleSearch}>Search</button>
+        <input
+          type="text"
+          placeholder="Enter Company"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Enter Job Title"
+          value={jobTitle}
+          onChange={(e) => setJobTitle(e.target.value)}
+        />
+        <Select
+          options={workModelOptions}
+          placeholder="Select Work Model"
+          value={workModel}
+          onChange={setWorkModel}
+        />
+        <Select
+          options={locationOptions}
+          placeholder="Select Location"
+          value={location}
+          onChange={setLocation}
+        />
+        <Select
+          options={datePostedOptions}
+          placeholder="Date Posted"
+          value={datePosted}
+          onChange={setDatePosted}
+        />
       </div>
     </div>
   );

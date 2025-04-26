@@ -2,12 +2,17 @@ import { useState, useEffect } from "react"
 import "./UploadResume.css"
 
 const UploadResume = () => {
-  const [file, setFile] = useState(null)
-  const [previewURL, setPreviewURL] = useState(null)
+  const [avatarFile, setAvatarFile] = useState(null)
   const [avatarUrl, setAvatarUrl] = useState(null)
+  const [avatarPreviewURL, setAvatarPreviewURL] = useState(null)
+
+  const [file, setFile] = useState(null)
   const [resumeUrl, setResumeUrl] = useState(null)
+  const [previewURL, setPreviewURL] = useState(null)
+
   const [user, setUser] = useState(null)
   const [uploadSuccessMessage, setUploadSuccessMessage] = useState('')
+  const [avatarUploadSuccessMessage, setAvatarUploadSuccessMessage] = useState('')
 
 
   useEffect(() => {
@@ -19,6 +24,7 @@ const UploadResume = () => {
 
   useEffect(() => {
     loadResume()
+    loadAvatar()
   })
   
   const loadAvatar = async () => {
@@ -70,7 +76,7 @@ const UploadResume = () => {
     }
   }
 
-  const handleFileChange = (event) => {
+  const handleResumeChange = (event) => {
     const selectedFile = event.target.files[0]
 
     if (selectedFile) {
@@ -82,6 +88,17 @@ const UploadResume = () => {
       } else {
         setPreviewURL(null)
       }
+    }
+  }
+
+  const handleAvatarChange = (event) => {
+    const selectedFile = event.target.files[0]
+
+    if (selectedFile) {
+      setAvatarFile(selectedFile)
+
+      const fileUrl = URL.createObjectURL(selectedFile)
+      setPreviewURL(fileUrl)
     }
   }
 
@@ -116,7 +133,6 @@ const UploadResume = () => {
           setUploadSuccessMessage('')
         }, 5000)
       }
-
       catch (err)
       {
         console.log(err)
@@ -129,22 +145,60 @@ const UploadResume = () => {
   }
 
   const handleAvatarSubmit = async (e) => {
-    
+    e.preventDefault()
+
+    if (avatarFile) {
+      const userToken = localStorage.getItem("token")
+      if (!userToken) {
+        alert("You are not logged in!")
+        return
+      }
+      try {
+        const data = new FormData()
+        data.append('image', avatarFile)
+        
+        const userToken = localStorage.getItem("token")
+        const res = await fetch('http://localhost:4000/api/upload-avatar', {
+          method: 'POST',
+          body: data,
+          headers: {
+            'Authorization': `Bearer ${userToken}`,
+          },
+        })
+
+        const result = await res.json()
+        const url = result.path
+        
+        setAvatarUrl(`./${url}`)
+        setAvatarUploadSuccessMessage('* Upload Successful')
+
+        setTimeout(() => {
+          setAvatarUploadSuccessMessage('')
+        }, 5000)
+      }
+      catch (err)
+      {
+        console.log(err)
+      }
+    }
+    else {
+      alert("Please select a file first!")
+    }
   }
 
 
   return (
     <>
       <div className="upload-resume-container">
-        <div className="pfp-container">
-          <img
-            src="./images-pfps/default-avatar.jpg"
-            alt=""
-            className="pfp-avatar"
-          />
-        </div>
+      <div className="pfp-container">
+        <img
+          src={avatarUrl ? avatarUrl : "./images-pfps/default-avatar.jpg"}
+          alt="User Avatar"
+          className="pfp-avatar"
+        />
+      </div>
         <div>
-          <input type="file" accept=".pdf,.docx" onChange={handleFileChange} />
+          <input type="file" accept=".png,.jpg,.jpeg" onChange={handleAvatarChange} />
           <button onClick={handleAvatarSubmit} className="upload-resume-btn">Submit</button>
           {!user && <p className="login-to-view-resume-label"> * Please log in to view your resume</p>}
         </div>
@@ -152,7 +206,7 @@ const UploadResume = () => {
         <p className="upload-resume-label">Select a PDF or DOCX file to showcase your experience.</p>
         
         <div>
-          <input type="file" accept=".pdf,.docx" onChange={handleFileChange} />
+          <input type="file" accept=".pdf,.docx" onChange={handleResumeChange} />
           <button onClick={handleResumeSubmit} className="upload-resume-btn">Submit</button>
           {!user && <p className="login-to-view-resume-label"> * Please log in to view your resume</p>}
         </div>

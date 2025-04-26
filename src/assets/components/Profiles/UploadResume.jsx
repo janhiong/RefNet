@@ -14,7 +14,6 @@ const UploadResume = () => {
   const [uploadSuccessMessage, setUploadSuccessMessage] = useState('')
   const [avatarUploadSuccessMessage, setAvatarUploadSuccessMessage] = useState('')
 
-
   useEffect(() => {
     const userLoggedin = window.localStorage.getItem('token')
     if (userLoggedin) {
@@ -26,7 +25,7 @@ const UploadResume = () => {
     loadResume()
     loadAvatar()
   })
-  
+
   const loadAvatar = async () => {
     try {
       const userToken = localStorage.getItem("token")
@@ -114,7 +113,6 @@ const UploadResume = () => {
         const data = new FormData()
         data.append('image',file)
         
-        const userToken = localStorage.getItem("token")
         const res = await fetch('http://localhost:4000/api/upload-resume', {
           method: 'POST',
           body: data,
@@ -157,7 +155,6 @@ const UploadResume = () => {
         const data = new FormData()
         data.append('image', avatarFile)
         
-        const userToken = localStorage.getItem("token")
         const res = await fetch('http://localhost:4000/api/upload-avatar', {
           method: 'POST',
           body: data,
@@ -186,32 +183,38 @@ const UploadResume = () => {
     }
   }
 
-
   return (
     <>
       <div className="upload-resume-container">
-      <div className="pfp-container">
-        <img
-          src={avatarUrl ? avatarUrl : "./images-pfps/default-avatar.jpg"}
-          alt="User Avatar"
-          className="pfp-avatar"
-        />
-      </div>
+        <div className="pfp-container">
+          <img
+            src={avatarUrl ? avatarUrl : "./images-pfps/default-avatar.jpg"}
+            alt="User Avatar"
+            className="pfp-avatar"
+          />
+        </div>
         <div>
           <input type="file" accept=".png,.jpg,.jpeg" onChange={handleAvatarChange} />
           <button onClick={handleAvatarSubmit} className="upload-resume-btn">Submit</button>
+          {avatarUploadSuccessMessage && (
+            <p className="upload-success-label">{avatarUploadSuccessMessage}</p>
+          )}
           {!user && <p className="login-to-view-resume-label"> * Please log in to view your resume</p>}
         </div>
+
         <p className="upload-resume-title">Upload Your Resume</p>
         <p className="upload-resume-label">Select a PDF or DOCX file to showcase your experience.</p>
         
         <div>
           <input type="file" accept=".pdf,.docx" onChange={handleResumeChange} />
           <button onClick={handleResumeSubmit} className="upload-resume-btn">Submit</button>
+          {uploadSuccessMessage && (
+            <p className="upload-success-label">{uploadSuccessMessage}</p>
+          )}
           {!user && <p className="login-to-view-resume-label"> * Please log in to view your resume</p>}
         </div>
+
         <div className="resume-button-container">
-          {uploadSuccessMessage && <p className="upload-success-label">{uploadSuccessMessage}</p>}
           {(user && resumeUrl) && <a href={resumeUrl} width="100%" height="500px" title="Resume Preview" className="resume-link">View Current Resume</a>}
           {(user && !resumeUrl) && <p>You currently have no resume uploaded.</p>}
         </div>

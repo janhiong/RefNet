@@ -8,7 +8,6 @@ import multer from 'multer';
 
 dotenv.config();
 
-
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -41,6 +40,18 @@ const avatarSchema = new mongoose.Schema({
   belongsToUser: {type: String, required: true, unique: true},
 })
 const Avatar = mongoose.model('Avatar', avatarSchema)
+
+// Multer config
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './images')
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '--' + file.originalname)
+  }
+})
+
+const upload = multer({ storage: fileStorageEngine });
 
 // Signup Route
 app.post('/api/signup', async (req, res) => {
@@ -117,18 +128,6 @@ app.get('/api/search-users', async (req, res) => {
       res.status(500).json({ message: err.message });
     }
   });  
-
-// Handle Upload Resume Logic 
-const fileStorageEngine = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './images')
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '--' + file.originalname)
-  }
-})
-
-const upload = multer({ storage: fileStorageEngine });
 
 // Resume Routes
 app.get('/api/resume', async (req, res) => {

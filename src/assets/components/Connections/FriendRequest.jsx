@@ -3,12 +3,11 @@ import "./FriendRequest.css";
 
 const FriendRequest = () => {
   const [users, setUsers] = useState([]);
-  const [sentRequests, setSentRequests] = useState([]); // Sent Requests
-  const [receivedRequests, setReceivedRequests] = useState([]); // Received Requests
+  const [sentRequests, setSentRequests] = useState([]);
+  const [receivedRequests, setReceivedRequests] = useState([]);
   const [connections, setConnections] = useState([]);
 
   useEffect(() => {
-    // Mock data for testing
     const mockUsers = [
       {
         id: 1,
@@ -36,37 +35,31 @@ const FriendRequest = () => {
     setUsers(mockUsers);
   }, []);
 
-  // Send a request: adds to Sent Requests and simulate receiving request
   const sendRequest = (user) => {
     if (!sentRequests.includes(user.id)) {
       setSentRequests([...sentRequests, user.id]);
     }
   };
 
-  // Unsend a request
   const unsendRequest = (user) => {
     setSentRequests(sentRequests.filter((id) => id !== user.id));
   };
 
-  // Accept a request: move to connections
   const acceptRequest = (user) => {
     setConnections([...connections, user]);
     setReceivedRequests(receivedRequests.filter((id) => id !== user.id));
   };
 
-  // Suggested users: not in Sent Requests or Connections
   const suggestedUsers = users.filter(
     (user) =>
       !sentRequests.includes(user.id) &&
       !connections.some((conn) => conn.id === user.id)
   );
 
-  // Pending requests: users who have sent a request to you
   const pendingRequests = users.filter((user) =>
     receivedRequests.includes(user.id)
   );
 
-  // Sent requests: users you have sent a request to
   const sentRequestUsers = users.filter((user) =>
     sentRequests.includes(user.id)
   );

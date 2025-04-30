@@ -188,7 +188,7 @@ const UploadResume = () => {
       <div className="upload-resume-container">
         <div className="pfp-container">
           <img
-            src={avatarUrl ? avatarUrl : "./images-pfps/default-avatar.jpg"}
+            src={avatarUrl ? avatarUrl : "./images/default-avatar.jpg"}
             alt="User Avatar"
             className="pfp-avatar"
           />

@@ -93,6 +93,12 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// Users Routes
+app.get('/api/users', async (req, res) => {
+  const users = await User.find({})
+  res.json(users)
+})
+
 // Search Users Logic
 app.get('/api/search-users', async (req, res) => {
     try {
@@ -125,7 +131,7 @@ const fileStorageEngine = multer.diskStorage({
 const upload = multer({ storage: fileStorageEngine });
 
 // Resume Routes
-app.post('/api/my-resume', async (req, res) => {
+app.get('/api/resume', async (req, res) => {
   const authenticationHeader = req.headers['authorization']
   const token = authenticationHeader.split(' ')[1]
 
@@ -142,7 +148,7 @@ app.post('/api/my-resume', async (req, res) => {
   res.json({path: resumeUrl})
 })
 
-app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
+app.post('/api/resume', upload.single('image'), async (req, res) => {
   const authenticationHeader = req.headers['authorization']
   
   if (!authenticationHeader) {
@@ -172,7 +178,7 @@ app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
 })
 
 // Avatar Routes
-app.post('/api/my-avatar', async (req, res) => {
+app.get('/api/avatar', async (req, res) => {
   const authenticationHeader = req.headers['authorization']
   const token = authenticationHeader.split(' ')[1]
 
@@ -189,7 +195,7 @@ app.post('/api/my-avatar', async (req, res) => {
   res.json({path: avatarUrl})
 })
 
-app.post('/api/upload-avatar', upload.single('image'), async (req, res) => {
+app.post('/api/avatar', upload.single('image'), async (req, res) => {
   const authenticationHeader = req.headers['authorization']
   
   if (!authenticationHeader) {
@@ -216,17 +222,6 @@ app.post('/api/upload-avatar', upload.single('image'), async (req, res) => {
   }
 
   res.json({path: avatarUrl})
-})
-
-// Display all
-app.get('/api/users', async (req, res) => {
-  const users = await User.find({})
-  res.json(users)
-})
-
-app.get('/api/resumes', async (req, res) => {
-  const resumes = await Resume.find({}) 
-  res.json(resumes)
 })
 
 app.get('/api/resumes/:id', async (req, res) => {

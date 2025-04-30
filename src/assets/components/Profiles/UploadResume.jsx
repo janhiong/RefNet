@@ -30,9 +30,8 @@ const UploadResume = () => {
     try {
       const userToken = localStorage.getItem("token")
       if (userToken) {
-        const res = await fetch('http://localhost:4000/api/my-avatar', {
-          method: 'POST',
-          body: userToken,
+        const res = await fetch('http://localhost:4000/api/avatar', {
+          method: 'GET',
           headers: {
             'Authorization': `Bearer ${userToken}`
           }
@@ -53,9 +52,8 @@ const UploadResume = () => {
     try {
       const userToken = localStorage.getItem("token")
       if (userToken) {
-        const res = await fetch('http://localhost:4000/api/my-resume', {
-          method: 'POST',
-          body: userToken,
+        const res = await fetch('http://localhost:4000/api/resume', {
+          method: 'GET',
           headers: {
             'Authorization': `Bearer ${userToken}`,
           }
@@ -113,7 +111,7 @@ const UploadResume = () => {
         const data = new FormData()
         data.append('image',file)
         
-        const res = await fetch('http://localhost:4000/api/upload-resume', {
+        const res = await fetch('http://localhost:4000/api/resume', {
           method: 'POST',
           body: data,
           headers: {
@@ -155,7 +153,7 @@ const UploadResume = () => {
         const data = new FormData()
         data.append('image', avatarFile)
         
-        const res = await fetch('http://localhost:4000/api/upload-avatar', {
+        const res = await fetch('http://localhost:4000/api/avatar', {
           method: 'POST',
           body: data,
           headers: {

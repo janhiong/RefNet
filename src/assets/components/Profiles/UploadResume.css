@@ -11,7 +11,7 @@
 .pfp-avatar {
   width: 200px;
   height: 200px;
-  background-size: cover;
+  object-fit: cover;
   border-radius: 15px;
 }
 

@@ -8,7 +8,6 @@ import multer from 'multer';
 
 dotenv.config();
 
-
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -35,12 +34,24 @@ const resumeSchema = new mongoose.Schema({
 })
 const Resume = mongoose.model('Resume', resumeSchema)
 
-// Profile Picture Schema
+// Avatar Picture Schema
 const avatarSchema = new mongoose.Schema({
   avatarUrl: {type: String, required: true, unique: true},
   belongsToUser: {type: String, required: true, unique: true},
 })
 const Avatar = mongoose.model('Avatar', avatarSchema)
+
+// Multer config
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, './images')
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '--' + file.originalname)
+  }
+})
+
+const upload = multer({ storage: fileStorageEngine });
 
 // Signup Route
 app.post('/api/signup', async (req, res) => {
@@ -93,6 +104,12 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// Users Routes
+app.get('/api/users', async (req, res) => {
+  const users = await User.find({})
+  res.json(users)
+})
+
 // Search Users Logic
 app.get('/api/search-users', async (req, res) => {
     try {
@@ -112,20 +129,8 @@ app.get('/api/search-users', async (req, res) => {
     }
   });  
 
-// Handle Upload Resume Logic 
-const fileStorageEngine = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './images')
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '--' + file.originalname)
-  }
-})
-
-const upload = multer({ storage: fileStorageEngine });
-
 // Resume Routes
-app.post('/api/my-resume', async (req, res) => {
+app.get('/api/resume', async (req, res) => {
   const authenticationHeader = req.headers['authorization']
   const token = authenticationHeader.split(' ')[1]
 
@@ -142,7 +147,7 @@ app.post('/api/my-resume', async (req, res) => {
   res.json({path: resumeUrl})
 })
 
-app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
+app.post('/api/resume', upload.single('image'), async (req, res) => {
   const authenticationHeader = req.headers['authorization']
   
   if (!authenticationHeader) {
@@ -171,31 +176,8 @@ app.post('/api/upload-resume', upload.single('image'), async (req, res) => {
   res.json({path: resumeUrl})
 })
 
-// Display all
-app.get('/api/users', async (req, res) => {
-  const users = await User.find({})
-  res.json(users)
-})
-
-app.get('/api/resumes', async (req, res) => {
-  const resumes = await Resume.find({}) 
-  res.json(resumes)
-})
-
-app.get('/api/resumes/:id', async (req, res) => {
-  const userId = req.params.id
-  const resume = await Resume.findOne({belongsToUser: userId})
-  
-  if (!resume) {
-    res.json({error: 'User does not exist'})
-    return
-  }
-
-  res.json({path: resume.resumeUrl})
-})
-
 // Avatar Routes
-app.post('/api/my-profileouc', async (req, res) => {
+app.get('/api/avatar', async (req, res) => {
   const authenticationHeader = req.headers['authorization']
   const token = authenticationHeader.split(' ')[1]
 
@@ -212,14 +194,14 @@ app.post('/api/my-profileouc', async (req, res) => {
   res.json({path: avatarUrl})
 })
 
-app.post('api/upload-avatar', upload.single('images-pfps'), async (req, res) => {
+app.post('/api/avatar', upload.single('image'), async (req, res) => {
   const authenticationHeader = req.headers['authorization']
   
   if (!authenticationHeader) {
     return res.status(401).json({ error: 'No authorization header' })
   }
 
-  const token = authenticationheader.split(' ')[1]
+  const token = authenticationHeader.split(' ')[1]
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
@@ -239,6 +221,18 @@ app.post('api/upload-avatar', upload.single('images-pfps'), async (req, res) => 
   }
 
   res.json({path: avatarUrl})
+})
+
+app.get('/api/resumes/:id', async (req, res) => {
+  const userId = req.params.id
+  const resume = await Resume.findOne({belongsToUser: userId})
+  
+  if (!resume) {
+    res.json({error: 'User does not exist'})
+    return
+  }
+
+  res.json({path: resume.resumeUrl})
 })
 
 // Start Server

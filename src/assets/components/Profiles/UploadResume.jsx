@@ -11,9 +11,9 @@ const UploadResume = () => {
   const [previewURL, setPreviewURL] = useState(null)
 
   const [user, setUser] = useState(null)
-  const [name, setName] = useState('Aboubacar Baradji')
+  const [name, setName] = useState('Insert Name')
   const [title, setTitle] = useState('Freshman @ Drexel University')
-  const [bio, setBio] = useState('I am looking for a job!')
+  const [bio, setBio] = useState('Broke bloke looking for a job!')
 
   const [nameInput, setNameInput] = useState('')
   const [titleInput, setTitleInput] = useState('')

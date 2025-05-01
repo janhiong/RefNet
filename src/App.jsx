@@ -8,6 +8,7 @@ import Login from "./assets/components/Credentials/Login";
 import Signup from "./assets/components/Credentials/Signup";
 import FriendRequest from "./assets/components/Connections/FriendRequest";
 import UploadResume from "./assets/components/Profiles/UploadResume.jsx";
+import FriendRecommended from "./assets/components/Connections/FriendRecommended.jsx";
 
 
 const Page = ({ title }) => <h1>{title}</h1>;
@@ -58,6 +59,7 @@ function App() {
           <Route path="/opportunity" element={<Page title="Dashboard" />} />
           <Route path="/friend-requests" element={<FriendRequest />} />
           <Route path="/upload-resume" element={<UploadResume />} />
+          <Route path="/friend-recommendeds" element={<FriendRecommended />} />
         </Route>
       </Routes>
     </Router>

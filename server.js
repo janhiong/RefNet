@@ -34,6 +34,15 @@ const resumeSchema = new mongoose.Schema({
 })
 const Resume = mongoose.model('Resume', resumeSchema)
 
+// Friendslist Schema
+const friendsSchema = new mongoose.Schema({
+  belongsTo: {type: String, required: true, unique: true},
+  friended: {type: [String]},
+  sent: {type: [String]},
+  pending: {type: [String]},
+})
+const Friend = mongoose.model('Friends', friendsSchema)
+
 // Avatar Picture Schema
 const avatarSchema = new mongoose.Schema({
   avatarUrl: {type: String, required: true, unique: true},
@@ -234,6 +243,18 @@ app.get('/api/resumes/:id', async (req, res) => {
 
   res.json({path: resume.resumeUrl})
 })
+
+app.get('/api/emails', async (req, res) => {
+  try {
+    // Get all users, but only return their email field
+    const users = await User.find().select('email');
+
+    res.json(users); // Sends an array of { _id, email } objects
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // Start Server
 const PORT = process.env.PORT || 4000;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import "./FriendRecommended.css";
-import placeholder from '../images/placeholderperson.jpg';
+import placeholder from "/src/assets/photos/placeholderperson.jpg";
 
 
 const App = () => {

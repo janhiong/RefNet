@@ -57,7 +57,7 @@
 .upload-resume-btn {
   padding: 10px 15px;
   border: none;
-  background: #027bff;
+  background: #2f4f4f;
   color: white;
   cursor: pointer;
   border-radius: 5px;
@@ -77,7 +77,7 @@
 input[type="file"]::file-selector-button {
   padding: 10px 15px;
   border: none;
-  background: #027bff;
+  background: #2f4f4f;
   color: white;
   cursor: pointer;
   border-radius: 5px;
@@ -104,12 +104,71 @@ input[type="file"]::file-selector-button {
 }
 
 .resume-link:hover {
-  border: 1px solid #027bff;
-  color: #027bff;
+  border: 1px solid #2f4f4f;
+  color: #2f4f4f;
 }
 
 .login-to-view-resume-label {
   color: red;
   margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.pencil-icon {
+  background-color: #f2f3f5;
+  padding: 15px;
+  border-radius: 15px;
+  transition: hover, 0.3s;
+}
+
+.pencil-icon:hover {
+  cursor: pointer;
+  background-color: #ccd1db;
+}
+
+.fa-icon {
+  color: black;
+}
+
+.profile-info-container {
+  display: flex;
+  flex-direction: column;
+  width: 389px;
+}
+
+.profile-name {
+  font-size: 25px;
+  color: black;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.profile-title {
+  font-size: 15px;
+  color: gray;
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.profile-bio {
+  font-size: 15px;
+  color: black;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.name-input-box {
+  font-size: 25px;
+  text-align: center;
+  margin-bottom: 5px;
+  border: none;
+  outline: none;
+}
+
+.title-input-box {
+  font-size: 15px;
+  text-align: center;
+  border: none;
+  outline: none;
   margin-bottom: 5px;
 }

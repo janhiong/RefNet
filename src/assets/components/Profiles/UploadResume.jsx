@@ -11,20 +11,30 @@ const UploadResume = () => {
   const [previewURL, setPreviewURL] = useState(null)
 
   const [user, setUser] = useState(null)
+  const [name, setName] = useState('Aboubacar Baradji')
+  const [title, setTitle] = useState('Freshman @ Drexel University')
+  const [bio, setBio] = useState('I am looking for a job!')
+
+  const [nameInput, setNameInput] = useState('')
+  const [titleInput, setTitleInput] = useState('')
+  const [bioInput, setBioInput] = useState('')
+
   const [uploadSuccessMessage, setUploadSuccessMessage] = useState('')
   const [avatarUploadSuccessMessage, setAvatarUploadSuccessMessage] = useState('')
+  
+  const [showAvatarUpload, setShowAvatarUpload] = useState(false)
+  const [showResumeUpload, setShowResumeUpload] = useState(false)
+  const [showEditProfile, setShowEditProfile] = useState(false)
+
 
   useEffect(() => {
     const userLoggedin = window.localStorage.getItem('token')
     if (userLoggedin) {
       setUser(userLoggedin)
     }
-  }, [])
-
-  useEffect(() => {
     loadResume()
     loadAvatar()
-  })
+  }, [])
 
   const loadAvatar = async () => {
     try {
@@ -184,6 +194,35 @@ const UploadResume = () => {
   return (
     <>
       <div className="upload-resume-container">
+        {!showEditProfile &&
+          <div className="profile-info-container">
+            <p className="profile-name">{name}</p>
+            <p className="profile-title">{title}</p>
+            <hr style={{ width: '100%', border: 'none', height: '1px', backgroundColor: '#ccc' }} />
+            <p className="profile-bio">{bio}</p>
+          </div>
+        }
+        {/* <div onClick={() => setShowEditProfile(!showEditProfile)} className="pencil-icon">
+          {showEditProfile
+            ? <i className="fa-solid fa-xmark fa-lg fa-icon"></i>
+            : <i className="fa-solid fa-pencil fa-lg fa-icon"></i>}
+        </div> */}
+        {showEditProfile && (
+          <div style={{display: "flex", flexDirection: "column"}}>
+            <input
+              className='name-input-box'
+              placeholder='Name'
+              value={nameInput}
+              onChange = {e => setNameInput(e.target.value)}
+            />
+            <input
+              className='title-input-box'
+              placeholder='Title/Role'
+              value={titleInput}
+              onChange = {e => setTitleInput(e.target.value)}
+            />
+          </div>
+        )}
         <div className="pfp-container">
           <img
             src={avatarUrl ? avatarUrl : "./images/default-avatar.jpg"}
@@ -191,26 +230,39 @@ const UploadResume = () => {
             className="pfp-avatar"
           />
         </div>
-        <div>
-          <input type="file" accept=".png,.jpg,.jpeg" onChange={handleAvatarChange} />
-          <button onClick={handleAvatarSubmit} className="upload-resume-btn">Submit</button>
-          {avatarUploadSuccessMessage && (
-            <p className="upload-success-label">{avatarUploadSuccessMessage}</p>
-          )}
-          {!user && <p className="login-to-view-resume-label"> * Please log in to view your resume</p>}
+
+        <div onClick={() => setShowAvatarUpload(!showAvatarUpload)} className="pencil-icon">
+          {showAvatarUpload
+            ? <i className="fa-solid fa-xmark fa-lg fa-icon"></i>
+            : <i className="fa-solid fa-pencil fa-lg fa-icon"></i>}
         </div>
 
+        {showAvatarUpload && (
+          <div>
+            <input type="file" accept=".png,.jpg,.jpeg" onChange={handleAvatarChange} />
+            <button onClick={handleAvatarSubmit} className="upload-resume-btn">Submit</button>
+            {avatarUploadSuccessMessage && <p className="upload-success-label">{avatarUploadSuccessMessage}</p>}
+            {!user && <p className="login-to-view-resume-label"> * Please log in to view your avatar</p>}
+          </div>
+        )}
+        
         <p className="upload-resume-title">Upload Your Resume</p>
         <p className="upload-resume-label">Select a PDF or DOCX file to showcase your experience.</p>
         
-        <div>
-          <input type="file" accept=".pdf,.docx" onChange={handleResumeChange} />
-          <button onClick={handleResumeSubmit} className="upload-resume-btn">Submit</button>
-          {uploadSuccessMessage && (
-            <p className="upload-success-label">{uploadSuccessMessage}</p>
-          )}
-          {!user && <p className="login-to-view-resume-label"> * Please log in to view your resume</p>}
+        <div onClick={() => setShowResumeUpload(!showResumeUpload)} className="pencil-icon">
+          {showResumeUpload
+            ? <i className="fa-solid fa-xmark fa-lg fa-icon"></i>
+            : <i className="fa-solid fa-pencil fa-lg fa-icon"></i>}
         </div>
+
+        {showResumeUpload && (
+          <div>
+            <input type="file" accept=".pdf,.docx" onChange={handleResumeChange} />
+            <button onClick={handleResumeSubmit} className="upload-resume-btn">Submit</button>
+            {uploadSuccessMessage && <p className="upload-success-label">{uploadSuccessMessage}</p>}
+            {!user && <p className="login-to-view-resume-label"> * Please log in to view your resume</p>}
+          </div>
+        )}
 
         <div className="resume-button-container">
           {(user && resumeUrl) && <a href={resumeUrl} width="100%" height="500px" title="Resume Preview" className="resume-link">View Current Resume</a>}

@@ -6,12 +6,20 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import multer from 'multer';
 
+// Tip:
+// When adding new routes, add new routes at the bottom of the file, before [Start Server].
+// Then, cluster similar routes together.
+
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use('/images', express.static('images'));
+
+// *-*-*-*-*-*-*-* //
+// MongoDB CONFIG. //
+// *-*-*-*-*-*-*-* //
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -49,6 +57,10 @@ const avatarSchema = new mongoose.Schema({
   belongsToUser: {type: String, required: true, unique: true},
 })
 const Avatar = mongoose.model('Avatar', avatarSchema)
+
+// *-*-*-*-*-*-*- //
+// EXPRESS ROUTES //
+// *-*-*-*-*-*-*- //
 
 // Multer config
 const fileStorageEngine = multer.diskStorage({
@@ -119,7 +131,6 @@ app.get('/api/users', async (req, res) => {
   res.json(users)
 })
 
-// Search Users Logic
 app.get('/api/search-users', async (req, res) => {
     try {
       const { query } = req.query;
@@ -232,6 +243,7 @@ app.post('/api/avatar', upload.single('image'), async (req, res) => {
   res.json({path: avatarUrl})
 })
 
+// Resume routes
 app.get('/api/resumes/:id', async (req, res) => {
   const userId = req.params.id
   const resume = await Resume.findOne({belongsToUser: userId})
@@ -244,17 +256,19 @@ app.get('/api/resumes/:id', async (req, res) => {
   res.json({path: resume.resumeUrl})
 })
 
+// Email routes
 app.get('/api/emails', async (req, res) => {
   try {
-    // Get all users, but only return their email field
     const users = await User.find().select('email');
 
-    res.json(users); // Sends an array of { _id, email } objects
+    res.json(users);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// New routes go here:
 
 // Start Server
 const PORT = process.env.PORT || 4000;

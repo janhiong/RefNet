@@ -58,6 +58,15 @@ const avatarSchema = new mongoose.Schema({
 })
 const Avatar = mongoose.model('Avatar', avatarSchema)
 
+// Profile Schema
+const profileSchema = new mongoose.Schema({
+  name: {type: String, required: true},
+  role: {type: String, required: true},
+  bio: {type: String, required: true},
+  belongsToUser: {type: String, required: true}
+})
+const Profile = mongoose.model('Profile', profileSchema)
+
 // *-*-*-*-*-*-*- //
 // EXPRESS ROUTES //
 // *-*-*-*-*-*-*- //
@@ -159,8 +168,7 @@ app.get('/api/resume', async (req, res) => {
   const resume = await Resume.findOne({belongsToUser: decoded.userId})
 
   if (!resume) {
-    console.log('The user has no resume')
-    return
+    return res.status(200)
   }
 
   const resumeUrl = resume.resumeUrl
@@ -267,6 +275,54 @@ app.get('/api/emails', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// Profile routes
+app.get('/api/profile', async (req, res) => {
+  const authenticationHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  const profile = await Profile.findOne({belongsToUser: decoded.userId})
+
+  if (!profile) {
+    return res.status(200)
+  }
+
+  res.json(profile)
+})
+
+app.post('/api/profile', async (req, res) => {
+  const authenticationHeader = req.headers['authorization']
+  
+  if (!authenticationHeader) {
+    return res.status(401).json({ error: 'No authorization header' })
+  }
+
+  const token = authenticationHeader.split(' ')[1] 
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  const body = req.body
+  const {name, role, bio} = body
+  const profile = await Profile.findOne({belongsToUser: decoded.userId})
+
+  if (profile) {
+    profile.name = name
+    profile.role = role
+    profile.bio = bio
+    await profile.save()
+  }
+  else {
+    profile = await Profile.create({
+      name: name,
+      role: role,
+      bio: bio,
+      belongsToUser: decoded.userId,
+    })
+  }
+
+  res.json(profile)
+})
 
 // New routes go here:
 

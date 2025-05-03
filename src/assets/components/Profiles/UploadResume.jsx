@@ -1,159 +1,220 @@
-import { useState, useEffect } from "react";
-import "./UploadResume.css";
+import { useState, useEffect } from "react"
+import "./UploadResume.css"
 
 const UploadResume = () => {
-  const [avatarFile, setAvatarFile] = useState(null);
-  const [avatarUrl, setAvatarUrl] = useState(null);
-  const [avatarPreviewURL, setAvatarPreviewURL] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null)
+  const [avatarUrl, setAvatarUrl] = useState(null)
+  const [avatarPreviewURL, setAvatarPreviewURL] = useState(null)
 
-  const [file, setFile] = useState(null);
-  const [resumeUrl, setResumeUrl] = useState(null);
-  const [previewURL, setPreviewURL] = useState(null);
+  const [file, setFile] = useState(null)
+  const [resumeUrl, setResumeUrl] = useState(null)
+  const [previewURL, setPreviewURL] = useState(null)
 
-  const [user, setUser] = useState(null);
-  const [name, setName] = useState('Insert Name');
-  const [title, setTitle] = useState('Position @ Organization');
-  const [bio, setBio] = useState('Insert Description Here');
+  const [user, setUser] = useState(null)
+  const [name, setName] = useState('Insert Name')
+  const [role, setRole] = useState('Position @ Organization')
+  const [bio, setBio] = useState('Insert Description Here')
 
-  const [nameInput, setNameInput] = useState('');
-  const [titleInput, setTitleInput] = useState('');
-  const [bioInput, setBioInput] = useState('');
+  const [nameInput, setNameInput] = useState('')
+  const [roleInput, setRoleInput] = useState('')
+  const [bioInput, setBioInput] = useState('')
 
-  const [uploadSuccessMessage, setUploadSuccessMessage] = useState('');
-  const [avatarUploadSuccessMessage, setAvatarUploadSuccessMessage] = useState('');
+  const [uploadSuccessMessage, setUploadSuccessMessage] = useState('')
+  const [avatarUploadSuccessMessage, setAvatarUploadSuccessMessage] = useState('')
 
-  const [showAvatarUpload, setShowAvatarUpload] = useState(false);
-  const [showResumeUpload, setShowResumeUpload] = useState(false);
-  const [showEditProfile, setShowEditProfile] = useState(false);
+  const [showAvatarUpload, setShowAvatarUpload] = useState(false)
+  const [showResumeUpload, setShowResumeUpload] = useState(false)
+  const [showEditProfile, setShowEditProfile] = useState(false)
 
   useEffect(() => {
-    const userLoggedin = window.localStorage.getItem('token');
+    const userLoggedin = window.localStorage.getItem('token')
     if (userLoggedin) {
-      setUser(userLoggedin);
+      setUser(userLoggedin)
     }
-    loadResume();
-    loadAvatar();
-  }, []);
+    loadResume()
+    loadAvatar()
+    loadProfile()
+  }, [])
+  
+  const loadProfile = async() => {
+    try {
+      const userToken = localStorage.getItem("token")
+      if (userToken) {
+        const res = await fetch('http://localhost:4000/api/profile', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${userToken}`
+          }
+        })
+        const result = await res.json()
+        if (result) {
+          setName(result.name)
+          setRole(result.role)
+          setBio(result.bio)
+        }
+      }
+    }
+    catch (error) {
+      console.log(error.message)
+    }
+  }
+
+  const saveProfile = async () => {
+    if (!nameInput || !roleInput || !bioInput) {
+      setShowEditProfile(false)
+      return
+    }
+  
+    try {
+      const userToken = localStorage.getItem("token")
+      if (userToken) {
+        const res = await fetch('http://localhost:4000/api/profile', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${userToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: nameInput,
+            role: roleInput,
+            bio: bioInput
+          })
+        })
+  
+        const result = await res.json()
+        setName(result.name)
+        setRole(result.role)
+        setBio(result.bio)
+        setShowEditProfile(false)
+        setNameInput('')
+        setRoleInput('')
+        setBioInput('')
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
+  
+
+  const loadResume = async () => {
+    try {
+      const userToken = localStorage.getItem("token")
+      if (userToken) {
+        const res = await fetch('http://localhost:4000/api/resume', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${userToken}`,
+          }
+        })
+
+        const result = await res.json()
+        const url = result.path
+
+        setResumeUrl(`./${url}`)
+      } else {
+        console.log('User is not logged in')
+      }
+    } catch (error) {
+      console.log("User does not have a resume")
+    }
+  }
+
+  const handleResumeChange = (event) => {
+    const selectedFile = event.target.files[0]
+
+    if (selectedFile) {
+      setFile(selectedFile)
+
+      if (selectedFile.type === "application/pdf") {
+        const fileURL = URL.createObjectURL(selectedFile)
+        setPreviewURL(fileURL)
+      } else {
+        setPreviewURL(null)
+      }
+    }
+  }
+
+  const handleResumeSubmit = async (e) => {
+    e.preventDefault()
+    if (file) {
+      const userToken = localStorage.getItem("token")
+      if (!userToken) {
+        alert("You are not logged in!")
+        return
+      }
+      try {
+        const data = new FormData()
+        data.append('image', file)
+
+        const res = await fetch('http://localhost:4000/api/resume', {
+          method: 'POST',
+          body: data,
+          headers: {
+            'Authorization': `Bearer ${userToken}`,
+          },
+        })
+
+        const result = await res.json()
+        const url = result.path
+
+        setResumeUrl(`./${url}`)
+        setUploadSuccessMessage('* Upload Successful')
+
+        setTimeout(() => {
+          setUploadSuccessMessage('')
+        }, 5000)
+      } catch (err) {
+        console.log(err)
+      }
+    } else {
+      setShowResumeUpload(false)
+    }
+  }
 
   const loadAvatar = async () => {
     try {
-      const userToken = localStorage.getItem("token");
+      const userToken = localStorage.getItem("token")
       if (userToken) {
         const res = await fetch('http://localhost:4000/api/avatar', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${userToken}`
           }
-        });
+        })
 
-        const result = await res.json();
-        const url = result.path;
+        const result = await res.json()
+        const url = result.path
 
-        setAvatarUrl(`./${url}`);
+        setAvatarUrl(`./${url}`)
       }
     } catch (error) {
-      console.log("User does not have an avatar");
+      console.log(error.message)
     }
-  };
-
-  const loadResume = async () => {
-    try {
-      const userToken = localStorage.getItem("token");
-      if (userToken) {
-        const res = await fetch('http://localhost:4000/api/resume', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${userToken}`,
-          }
-        });
-
-        const result = await res.json();
-        const url = result.path;
-
-        setResumeUrl(`./${url}`);
-      } else {
-        console.log('User is not logged in');
-      }
-    } catch (error) {
-      console.log("User does not have a resume");
-    }
-  };
-
-  const handleResumeChange = (event) => {
-    const selectedFile = event.target.files[0];
-
-    if (selectedFile) {
-      setFile(selectedFile);
-
-      if (selectedFile.type === "application/pdf") {
-        const fileURL = URL.createObjectURL(selectedFile);
-        setPreviewURL(fileURL);
-      } else {
-        setPreviewURL(null);
-      }
-    }
-  };
+  }
 
   const handleAvatarChange = (event) => {
-    const selectedFile = event.target.files[0];
+    const selectedFile = event.target.files[0]
 
     if (selectedFile) {
-      setAvatarFile(selectedFile);
+      setAvatarFile(selectedFile)
 
-      const fileUrl = URL.createObjectURL(selectedFile);
-      setPreviewURL(fileUrl);
+      const fileUrl = URL.createObjectURL(selectedFile)
+      setPreviewURL(fileUrl)
     }
-  };
-
-  const handleResumeSubmit = async (e) => {
-    e.preventDefault();
-    if (file) {
-      const userToken = localStorage.getItem("token");
-      if (!userToken) {
-        alert("You are not logged in!");
-        return;
-      }
-      try {
-        const data = new FormData();
-        data.append('image', file);
-
-        const res = await fetch('http://localhost:4000/api/resume', {
-          method: 'POST',
-          body: data,
-          headers: {
-            'Authorization': `Bearer ${userToken}`,
-          },
-        });
-
-        const result = await res.json();
-        const url = result.path;
-
-        setResumeUrl(`./${url}`);
-        setUploadSuccessMessage('* Upload Successful');
-
-        setTimeout(() => {
-          setUploadSuccessMessage('');
-        }, 5000);
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      alert("Please select a file first!");
-    }
-  };
+  }
 
   const handleAvatarSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (avatarFile) {
-      const userToken = localStorage.getItem("token");
+      const userToken = localStorage.getItem("token")
       if (!userToken) {
-        alert("You are not logged in!");
-        return;
+        alert("You are not logged in!")
+        return
       }
       try {
-        const data = new FormData();
-        data.append('image', avatarFile);
+        const data = new FormData()
+        data.append('image', avatarFile)
 
         const res = await fetch('http://localhost:4000/api/avatar', {
           method: 'POST',
@@ -161,31 +222,24 @@ const UploadResume = () => {
           headers: {
             'Authorization': `Bearer ${userToken}`,
           },
-        });
+        })
 
-        const result = await res.json();
-        const url = result.path;
+        const result = await res.json()
+        const url = result.path
 
-        setAvatarUrl(`./${url}`);
-        setAvatarUploadSuccessMessage('* Upload Successful');
+        setAvatarUrl(`./${url}`)
+        setAvatarUploadSuccessMessage('* Upload Successful')
 
         setTimeout(() => {
-          setAvatarUploadSuccessMessage('');
-        }, 5000);
+          setAvatarUploadSuccessMessage('')
+        }, 5000)
       } catch (err) {
-        console.log(err);
+        console.log(err)
       }
     } else {
-      alert("Please select a file first!");
+      setShowAvatarUpload(false)
     }
-  };
-
-  const saveEdit = () => {
-    setName(nameInput);
-    setTitle(titleInput);
-    setBio(bioInput);
-    setShowEditProfile(false);
-  };
+  }
 
   return (
     <>
@@ -199,7 +253,7 @@ const UploadResume = () => {
         <>
           <div className="profile-info-container">
             <p className="profile-name">{name}</p>
-            <p className="profile-title">{title}</p>
+            <p className="profile-title">{role}</p>
             <p className="profile-bio">{bio}</p>
           </div>
         </>
@@ -215,8 +269,8 @@ const UploadResume = () => {
             <input
               className="title-input-box"
               placeholder="Title/Role"
-              value={titleInput}
-              onChange={e => setTitleInput(e.target.value)}
+              value={roleInput}
+              onChange={e => setRoleInput(e.target.value)}
             />
             <input
               className="bio-input-box"
@@ -225,7 +279,7 @@ const UploadResume = () => {
               onChange={e => setBioInput(e.target.value)}
             />
             <div style={{ marginTop: '10px' }}>
-              <button className="save-edit-btn" onClick={saveEdit}>Save</button>
+              <button className="save-profile-btn" onClick={saveProfile}>Save</button>
             </div>
           </div>
         )}
@@ -277,7 +331,7 @@ const UploadResume = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default UploadResume;
+export default UploadResume

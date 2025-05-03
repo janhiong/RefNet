@@ -54,6 +54,18 @@
   margin-bottom: 10px;
 }
 
+.save-profile-btn {
+  padding: 10px 15px;
+  border: none;
+  background: #2f4f4f;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  text-decoration: none;
+  transition: hover, 0.3s;
+}
+
 .upload-resume-btn {
   padding: 10px 15px;
   border: none;
@@ -62,7 +74,7 @@
   cursor: pointer;
   border-radius: 5px;
   font-size: 16px;
-  text-decoration: none; /* Removes underline from Link */
+  text-decoration: none;
   transition: hover, 0.3s;
 }
 
@@ -82,7 +94,7 @@ input[type="file"]::file-selector-button {
   cursor: pointer;
   border-radius: 5px;
   font-size: 16px;
-  text-decoration: none; /* Removes underline from Link */
+  text-decoration: none;
   transition: hover, 0.3s;
 }
 

@@ -28,11 +28,23 @@ mongoose.connect(process.env.MONGO_URI, {
 }).then(() => console.log("MongoDB Connected"))
   .catch(err => console.error("MongoDB Connection Error:", err));
 
+// Transform: Remove _id and _v fields from returned JSON objects
+const transform = (schema) => {
+  schema.set('toJSON', {
+    transform: function (doc, ret, options) {
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  })
+}
+
 // User Schema
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-});
+})
+transform(userSchema);
 const User = mongoose.model('User', userSchema);
 
 // Resume Schema
@@ -40,6 +52,7 @@ const resumeSchema = new mongoose.Schema({
   resumeUrl: {type: String, required: true, unique: true},
   belongsToUser: {type: String, required: true, unique: true},
 })
+transform(resumeSchema);
 const Resume = mongoose.model('Resume', resumeSchema)
 
 // Friendslist Schema
@@ -49,6 +62,7 @@ const friendsSchema = new mongoose.Schema({
   sent: {type: [String]},
   pending: {type: [String]},
 })
+transform(friendsSchema);
 const Friend = mongoose.model('Friends', friendsSchema)
 
 // Avatar Picture Schema
@@ -56,6 +70,7 @@ const avatarSchema = new mongoose.Schema({
   avatarUrl: {type: String, required: true, unique: true},
   belongsToUser: {type: String, required: true, unique: true},
 })
+transform(avatarSchema);
 const Avatar = mongoose.model('Avatar', avatarSchema)
 
 // Profile Schema
@@ -65,6 +80,7 @@ const profileSchema = new mongoose.Schema({
   bio: {type: String, required: true},
   belongsToUser: {type: String, required: true}
 })
+transform(profileSchema);
 const Profile = mongoose.model('Profile', profileSchema)
 
 // *-*-*-*-*-*-*- //

@@ -1,21 +1,21 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-import multer from 'multer';
+import express from 'express'
+import mongoose from 'mongoose'
+import cors from 'cors'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+import multer from 'multer'
 
 // Tip:
 // When adding new routes, add new routes at the bottom of the file, before [Start Server].
 // Then, cluster similar routes together.
 
-dotenv.config();
+dotenv.config()
 
-const app = express();
-app.use(express.json());
-app.use(cors());
-app.use('/images', express.static('images'));
+const app = express()
+app.use(express.json())
+app.use(cors())
+app.use('/images', express.static('images'))
 
 // *-*-*-*-*-*-*-* //
 // MongoDB CONFIG. //
@@ -26,33 +26,20 @@ mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log("MongoDB Connected"))
-  .catch(err => console.error("MongoDB Connection Error:", err));
-
-// Transform: Remove _id and _v fields from returned JSON objects
-const transform = (schema) => {
-  schema.set('toJSON', {
-    transform: function (doc, ret, options) {
-      delete ret._id;
-      delete ret.__v;
-      return ret;
-    }
-  })
-}
+  .catch(err => console.error("MongoDB Connection Error:", err))
 
 // User Schema
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
 })
-transform(userSchema);
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema)
 
 // Resume Schema
 const resumeSchema = new mongoose.Schema({
   resumeUrl: {type: String, required: true, unique: true},
   belongsToUser: {type: String, required: true, unique: true},
 })
-transform(resumeSchema);
 const Resume = mongoose.model('Resume', resumeSchema)
 
 // Friendslist Schema
@@ -62,7 +49,6 @@ const friendsSchema = new mongoose.Schema({
   sent: {type: [String]},
   pending: {type: [String]},
 })
-transform(friendsSchema);
 const Friend = mongoose.model('Friends', friendsSchema)
 
 // Avatar Picture Schema
@@ -70,7 +56,6 @@ const avatarSchema = new mongoose.Schema({
   avatarUrl: {type: String, required: true, unique: true},
   belongsToUser: {type: String, required: true, unique: true},
 })
-transform(avatarSchema);
 const Avatar = mongoose.model('Avatar', avatarSchema)
 
 // Profile Schema
@@ -80,7 +65,6 @@ const profileSchema = new mongoose.Schema({
   bio: {type: String, required: true},
   belongsToUser: {type: String, required: true}
 })
-transform(profileSchema);
 const Profile = mongoose.model('Profile', profileSchema)
 
 // *-*-*-*-*-*-*- //
@@ -97,82 +81,113 @@ const fileStorageEngine = multer.diskStorage({
   }
 })
 
-const upload = multer({ storage: fileStorageEngine });
+const upload = multer({ storage: fileStorageEngine })
 
 // Signup Route
 app.post('/api/signup', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.body
 
     try {
-        let user = await User.findOne({ email });
-        if (user) return res.status(400).json({ message: 'User already exists' });
+        let user = await User.findOne({ email })
+        if (user) return res.status(400).json({ message: 'User already exists' })
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
 
-        user = new User({ email, password: hashedPassword });
-        await user.save();
+        user = new User({ email, password: hashedPassword })
+        await user.save()
 
         const userForToken = {
           userId: user._id,
           password: user.password
         }
 
-        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' })
 
-        res.status(201).json({token, message: 'User registered successfully', });
+        res.status(201).json({token, message: 'User registered successfully', })
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error' })
     }
-});
+})
 
 // Login Route
 app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.body
 
     try {
-        const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+        const user = await User.findOne({ email })
+        if (!user) return res.status(400).json({ message: 'Invalid credentials' })
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' })
 
         const userForToken = {
           userId: user._id,
           password: user.password
         }
 
-        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' })
 
-        res.json({ token, user: { email: user.email } });
+        res.json({ token, user: { email: user.email } })
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error' })
     }
-});
+})
 
 // Users Routes
 app.get('/api/users', async (req, res) => {
-  const users = await User.find({})
-  res.json(users)
+  try {
+    const users = await User.find()
+    const avatars = await Avatar.find()
+    const profiles = await Profile.find()
+    const resumes = await Resume.find()
+
+    const result = users.map(user => {
+      const userId = String(user._id)
+
+      const avatar = avatars.find(a => a.belongsToUser === userId)
+      const profile = profiles.find(p => p.belongsToUser === userId)
+      const resume = resumes.find(r => r.belongsToUser === userId)
+
+      return {
+        id: userId,
+        email: user.email,
+        avatarUrl: avatar?.avatarUrl || null,
+        profile: profile
+          ? {
+              name: profile.name,
+              role: profile.role,
+              bio: profile.bio
+            }
+          : null,
+        resumeUrl: resume?.resumeUrl || null
+      }
+    })
+
+    res.json(result)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Server error' })
+  }
 })
 
 app.get('/api/search-users', async (req, res) => {
     try {
-      const { query } = req.query;
+      const { query } = req.query
   
       if (!query) {
-        return res.json([]);
+        return res.json([])
       }
   
       const users = await User.find({
         name: { $regex: query, $options: "i" },
-      });
+      })
   
-      res.json(users);
+      res.json(users)
     } catch (err) {
-      res.status(500).json({ message: err.message });
+      res.status(500).json({ message: err.message })
     }
-  });  
+  })  
 
 // Resume Routes
 app.get('/api/resume', async (req, res) => {
@@ -283,14 +298,14 @@ app.get('/api/resumes/:id', async (req, res) => {
 // Email routes
 app.get('/api/emails', async (req, res) => {
   try {
-    const users = await User.find().select('email');
+    const users = await User.find().select('email')
 
-    res.json(users);
+    res.json(users)
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error(err)
+    res.status(500).json({ message: 'Server error' })
   }
-});
+})
 
 // Profile routes
 app.get('/api/profile', async (req, res) => {
@@ -343,5 +358,5 @@ app.post('/api/profile', async (req, res) => {
 // New routes go here:
 
 // Start Server
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 4000
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

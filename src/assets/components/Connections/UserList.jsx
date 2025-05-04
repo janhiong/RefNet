@@ -16,7 +16,6 @@ const UserList = () => {
       const response = await fetch('http://localhost:4000/api/users');
       const data = await response.json();
       
-      // Assuming the API returns an array of users
       setFriends(data);
     } catch (err) {
       console.error('Error fetching users:', err);
@@ -27,19 +26,21 @@ const UserList = () => {
     
   }
 
-
   return (
-    <div className="user-list">
-      {friends.length > 0 ? (
-        friends.map((user) => (
-          <UserContainer
-            key={user.id} // Assuming the user object contains a unique 'id'
-            user={user}
-          />
-        ))
-      ) : (
-        <p>No users available.</p>
-      )}
+    <div className='connections-grid-wrapper'>
+      <div className="connections-grid">
+        {friends.length > 0 ? (
+          friends.map((user) => (
+            <UserContainer
+              key={user.id}
+              user={user}
+              onClick={handleSendRequest}
+            />
+          ))
+        ) : (
+          <p>No users available.</p>
+        )}
+      </div>
     </div>
   )
 }

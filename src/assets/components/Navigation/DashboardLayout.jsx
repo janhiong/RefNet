@@ -1,14 +1,14 @@
 import React from "react";
 import { Outlet } from "react-router-dom"; // ✅ Required
-import Sidebar from "./Sidebar";
+import NavBar from "./NavigationBar";
 import "./DashboardLayout.css";
 
 const DashboardLayout = () => {
   return (
     <div className="dashboard-layout">
-      <Sidebar />
+      <NavBar />
       <div className="main-content">
-        <Outlet /> {/* ✅ This renders nested route content */}
+        <Outlet />
       </div>
     </div>
   );

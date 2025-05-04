@@ -1,11 +1,10 @@
 .dashboard-layout {
-    background: linear-gradient(to bottom, #b0e0e6, #ffffff);
-    background-size: contain;
-    background-attachment: fixed;
-    height: 100vh;
-    width: 100vw;
-    text-align: center;
-    padding: 40px 20px;
-  }
-  
-  
+  background-size: contain;
+  background-attachment: fixed;
+  background-color: #eef4ee;
+  margin-top: 60px;
+  min-height: 100vh;
+  width: 100%;
+  text-align: center;
+  padding: 40px 20px;
+}

@@ -1,11 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import "./Sidebar.css";
+import "./NavigationBar.css";
 
-const Sidebar = () => {
+const NavBar = () => {
   return (
-    <div className="sidebar">
-      <h2 className="sidebar-title">Main Dashboard</h2>
+    <div className="navbar">
+      <h2 className="navbar-title">Main Dashboard</h2>
       <nav className="nav-links">
         <NavLink to="/opportunity" className="nav-item">
           <span></span> Opportunities List
@@ -27,4 +27,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default NavBar;

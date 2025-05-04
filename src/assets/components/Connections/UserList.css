@@ -10,23 +10,23 @@
   margin-top: 20px;
 }
 
-.friend-box {
+.user-container {
+  width: 500px;
   padding: 20px;
-  background-color: #f1f1f1;
-  border: 1px solid #ccc;
+  background-color: #ffffff;
   border-radius: 10px;
   text-align: center;
 }
 
-.friend-image {
+.user-image {
   width: 100px;
   height: 100px;
-  border-radius: 50%;
+  border-radius: 20px;
   object-fit: cover;
   margin-bottom: 10px;
 }
 
-button {
+.connection-button {
   padding: 8px 16px;
   background-color: #007bff;
   color: white;
@@ -36,11 +36,6 @@ button {
   margin-top: 10px;
 }
 
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-button:hover {
+.connection-button:hover {
   background-color: #0056b3;
 }

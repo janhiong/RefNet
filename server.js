@@ -295,18 +295,6 @@ app.get('/api/resumes/:id', async (req, res) => {
   res.json({path: resume.resumeUrl})
 })
 
-// Email routes
-app.get('/api/emails', async (req, res) => {
-  try {
-    const users = await User.find().select('email')
-
-    res.json(users)
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ message: 'Server error' })
-  }
-})
-
 // Profile routes
 app.get('/api/profile', async (req, res) => {
   const authenticationHeader = req.headers['authorization']

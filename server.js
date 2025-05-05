@@ -42,14 +42,14 @@ const resumeSchema = new mongoose.Schema({
 })
 const Resume = mongoose.model('Resume', resumeSchema)
 
-// Friendslist Schema
-const friendsSchema = new mongoose.Schema({
+// Connections Schema
+const connectionsSchema = new mongoose.Schema({
   belongsTo: {type: String, required: true, unique: true},
-  friended: {type: [String]},
+  connected: {type: [String]},
   sent: {type: [String]},
   pending: {type: [String]},
 })
-const Friend = mongoose.model('Friends', friendsSchema)
+const Connection = mongoose.model('Connections', connectionsSchema)
 
 // Avatar Picture Schema
 const avatarSchema = new mongoose.Schema({
@@ -96,6 +96,13 @@ app.post('/api/signup', async (req, res) => {
 
         user = new User({ email, password: hashedPassword })
         await user.save()
+
+        await Connection.create({
+          belongsTo: user._id,
+          connected: [],
+          sent: [],
+          pending: [],
+        })
 
         const userForToken = {
           userId: user._id,
@@ -343,7 +350,98 @@ app.post('/api/profile', async (req, res) => {
   res.json(profile)
 })
 
-// New routes go here:
+// Connections
+app.post('/api/send-connection-request', async (req, res) => {
+  const { targetUserId } = req.body
+  const authenticationHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  if (decoded.userId === targetUserId) {
+    return res.status(400).json({ message: 'You cannot send a connection request to yourself' })
+  }
+
+  let userConn = await Connection.findOne({ belongsTo: decoded.userId })
+  let targetConn = await Connection.findOne({ belongsTo: targetUserId })
+
+  if (!userConn) {
+    userConn = new Connection({
+      belongsTo: decoded.userId,
+      connected: [],
+      pending: [],
+    })
+    await userConn.save()
+  }
+  else {
+    if (userConn.sent.includes(targetUserId)) {
+      return res.status(400).json({ message: 'Connection request already sent' })
+    }
+    userConn.sent.push(targetUserId)
+    await userConn.save()
+  }
+
+  if (!targetConn) {
+    targetConn = new Connection({
+      belongsTo: targetUserId,
+      connected: [],
+      sent: [],
+      pending: [decoded.userId],
+    })
+    await targetConn.save()
+  }
+  else {
+    targetConn.pending.push(decoded.userId)
+    await targetConn.save()
+  }
+
+  res.status(200).json({
+    message: 'Connection request sent successfully',
+    userConn: userConn,
+    targetConn: targetConn,
+  })
+})
+
+app.post('/api/accept-connection-request', async (req, res) => {
+  const { targetUserId } = req.body
+  const authenticationHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  if (decoded.userId === targetUserId) {
+    return res.status(400).json({ message: 'You cannot accept a connection request from yourself' })
+  }
+
+  const userConn = await Connection.findOne({ belongsTo: decoded.userId })
+  const targetConn = await Connection.findOne({ belongsTo: targetUserId })
+
+  if (!userConn || !targetConn) {
+    return res.status(400).json({ message: 'Connection not found' })
+  }
+
+  if (!userConn.pending.includes(targetUserId)) {
+    return res.status(400).json({ message: 'No connection request found from this user' })
+  }
+
+  userConn.pending = userConn.pending.filter(id => id !== targetUserId)
+  userConn.friended.push(targetUserId)
+  targetConn.sent = targetConn.sent.filter(id => id !== decoded.userId)
+  targetConn.pending = targetConn.pending.filter(id => id !== decoded.userId)
+  targetConn.friended.push(decoded.userId)
+
+  await userConn.save()
+  await targetConn.save()
+
+  res.status(200).json({
+    message: 'Connection request accepted successfully',
+    userConn: userConn,
+    targetConn: targetConn,
+  })
+})
+
+// New routes go here
+
 
 // Start Server
 const PORT = process.env.PORT || 4000

@@ -4,11 +4,12 @@ import "./UploadResume.css"
 const UploadResume = () => {
   const [avatarFile, setAvatarFile] = useState(null)
   const [avatarUrl, setAvatarUrl] = useState(null)
-  const [avatarPreviewURL, setAvatarPreviewURL] = useState(null)
+  const [previewURL, setPreviewURL] = useState(null)
 
   const [file, setFile] = useState(null)
   const [resumeUrl, setResumeUrl] = useState(null)
-  const [previewURL, setPreviewURL] = useState(null)
+  const [uploadSuccessMessage, setUploadSuccessMessage] = useState('')
+  const [avatarUploadSuccessMessage, setAvatarUploadSuccessMessage] = useState('')
 
   const [user, setUser] = useState(null)
   const [name, setName] = useState('Insert Name')
@@ -18,9 +19,6 @@ const UploadResume = () => {
   const [nameInput, setNameInput] = useState('')
   const [roleInput, setRoleInput] = useState('')
   const [bioInput, setBioInput] = useState('')
-
-  const [uploadSuccessMessage, setUploadSuccessMessage] = useState('')
-  const [avatarUploadSuccessMessage, setAvatarUploadSuccessMessage] = useState('')
 
   const [showAvatarUpload, setShowAvatarUpload] = useState(false)
   const [showResumeUpload, setShowResumeUpload] = useState(false)
@@ -35,8 +33,8 @@ const UploadResume = () => {
     loadAvatar()
     loadProfile()
   }, [])
-  
-  const loadProfile = async() => {
+
+  const loadProfile = async () => {
     try {
       const userToken = localStorage.getItem("token")
       if (userToken) {
@@ -53,9 +51,8 @@ const UploadResume = () => {
           setBio(result.bio)
         }
       }
-    }
-    catch (error) {
-      console.log(error.message)
+    } catch (error) {
+      console.log("Error loading profile:", error.message)
     }
   }
 
@@ -64,7 +61,7 @@ const UploadResume = () => {
       setShowEditProfile(false)
       return
     }
-  
+
     try {
       const userToken = localStorage.getItem("token")
       if (userToken) {
@@ -80,7 +77,7 @@ const UploadResume = () => {
             bio: bioInput
           })
         })
-  
+
         const result = await res.json()
         setName(result.name)
         setRole(result.role)
@@ -91,10 +88,9 @@ const UploadResume = () => {
         setBioInput('')
       }
     } catch (error) {
-      console.log(error.message)
+      console.log("Error saving profile:", error.message)
     }
   }
-  
 
   const loadResume = async () => {
     try {
@@ -108,23 +104,25 @@ const UploadResume = () => {
         })
 
         const result = await res.json()
-        const url = result.path
-
-        setResumeUrl(`./${url}`)
+        if (result.path) {
+          setResumeUrl(`./${result.path}`)
+        } else {
+          setResumeUrl(null)
+          console.log('User has no resume')
+        }
       } else {
         console.log('User is not logged in')
       }
     } catch (error) {
-      console.log("User does not have a resume")
+      console.log("Error loading resume:", error.message)
+      setResumeUrl(null)
     }
   }
 
   const handleResumeChange = (event) => {
     const selectedFile = event.target.files[0]
-
     if (selectedFile) {
       setFile(selectedFile)
-
       if (selectedFile.type === "application/pdf") {
         const fileURL = URL.createObjectURL(selectedFile)
         setPreviewURL(fileURL)
@@ -154,9 +152,12 @@ const UploadResume = () => {
           },
         })
 
+        if (!res.ok) {
+          throw new Error('Resume upload failed')
+        }
+
         const result = await res.json()
         const url = result.path
-
         setResumeUrl(`./${url}`)
         setUploadSuccessMessage('* Upload Successful')
 
@@ -165,9 +166,11 @@ const UploadResume = () => {
         }, 5000)
       } catch (err) {
         console.log(err)
+        alert('Failed to upload resume. Please try again.')
       }
     } else {
       setShowResumeUpload(false)
+      alert('No file selected for upload')
     }
   }
 
@@ -183,21 +186,23 @@ const UploadResume = () => {
         })
 
         const result = await res.json()
-        const url = result.path
-
-        setAvatarUrl(`./${url}`)
+        if (result.path) {
+          setAvatarUrl(`./${result.path}`)
+        } else {
+          setAvatarUrl(null)
+          console.log('No avatar found')
+        }
       }
     } catch (error) {
-      console.log(error.message)
+      console.log("Error loading avatar:", error.message)
+      setAvatarUrl(null)
     }
   }
 
   const handleAvatarChange = (event) => {
     const selectedFile = event.target.files[0]
-
     if (selectedFile) {
       setAvatarFile(selectedFile)
-
       const fileUrl = URL.createObjectURL(selectedFile)
       setPreviewURL(fileUrl)
     }
@@ -224,9 +229,12 @@ const UploadResume = () => {
           },
         })
 
+        if (!res.ok) {
+          throw new Error('Avatar upload failed')
+        }
+
         const result = await res.json()
         const url = result.path
-
         setAvatarUrl(`./${url}`)
         setAvatarUploadSuccessMessage('* Upload Successful')
 
@@ -235,9 +243,11 @@ const UploadResume = () => {
         }, 5000)
       } catch (err) {
         console.log(err)
+        alert('Failed to upload avatar. Please try again.')
       }
     } else {
       setShowAvatarUpload(false)
+      alert('No file selected for upload')
     }
   }
 

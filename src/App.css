@@ -4,7 +4,7 @@ body {
 }
 
 .App {
-  background: linear-gradient(to bottom, #b0e0e6, #ffffff);
+  background: linear-gradient(to bottom, #498888, #ffffff);
   background-size: contain;
   background-attachment: fixed;
   height: 100vh;

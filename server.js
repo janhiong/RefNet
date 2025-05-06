@@ -1,31 +1,39 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-import multer from 'multer';
+import express from 'express'
+import mongoose from 'mongoose'
+import cors from 'cors'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+import multer from 'multer'
 
-dotenv.config();
+// Tip:
+// When adding new routes, add new routes at the bottom of the file, before [Start Server].
+// Then, cluster similar routes together.
 
-const app = express();
-app.use(express.json());
-app.use(cors());
-app.use('/images', express.static('images'));
+dotenv.config()
+
+const app = express()
+app.use(express.json())
+app.use(cors())
+app.use('/images', express.static('images'))
+
+// *-*-*-*-*-*-*-* //
+// MongoDB CONFIG. //
+// *-*-*-*-*-*-*-* //
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log("MongoDB Connected"))
-  .catch(err => console.error("MongoDB Connection Error:", err));
+  .catch(err => console.error("MongoDB Connection Error:", err))
 
 // User Schema
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-});
-const User = mongoose.model('User', userSchema);
+})
+const User = mongoose.model('User', userSchema)
 
 // Resume Schema
 const resumeSchema = new mongoose.Schema({
@@ -34,14 +42,14 @@ const resumeSchema = new mongoose.Schema({
 })
 const Resume = mongoose.model('Resume', resumeSchema)
 
-// Friendslist Schema
-const friendsSchema = new mongoose.Schema({
+// Connections Schema
+const connectionsSchema = new mongoose.Schema({
   belongsTo: {type: String, required: true, unique: true},
-  friended: {type: [String]},
+  connected: {type: [String]},
   sent: {type: [String]},
   pending: {type: [String]},
 })
-const Friend = mongoose.model('Friends', friendsSchema)
+const Connection = mongoose.model('Connections', connectionsSchema)
 
 // Avatar Picture Schema
 const avatarSchema = new mongoose.Schema({
@@ -49,6 +57,19 @@ const avatarSchema = new mongoose.Schema({
   belongsToUser: {type: String, required: true, unique: true},
 })
 const Avatar = mongoose.model('Avatar', avatarSchema)
+
+// Profile Schema
+const profileSchema = new mongoose.Schema({
+  name: {type: String, required: true},
+  role: {type: String, required: true},
+  bio: {type: String, required: true},
+  belongsToUser: {type: String, required: true}
+})
+const Profile = mongoose.model('Profile', profileSchema)
+
+// *-*-*-*-*-*-*- //
+// EXPRESS ROUTES //
+// *-*-*-*-*-*-*- //
 
 // Multer config
 const fileStorageEngine = multer.diskStorage({
@@ -60,83 +81,120 @@ const fileStorageEngine = multer.diskStorage({
   }
 })
 
-const upload = multer({ storage: fileStorageEngine });
+const upload = multer({ storage: fileStorageEngine })
 
 // Signup Route
 app.post('/api/signup', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.body
 
     try {
-        let user = await User.findOne({ email });
-        if (user) return res.status(400).json({ message: 'User already exists' });
+        let user = await User.findOne({ email })
+        if (user) return res.status(400).json({ message: 'User already exists' })
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
 
-        user = new User({ email, password: hashedPassword });
-        await user.save();
+        user = new User({ email, password: hashedPassword })
+        await user.save()
+
+        await Connection.create({
+          belongsTo: user._id,
+          connected: [],
+          sent: [],
+          pending: [],
+        })
 
         const userForToken = {
           userId: user._id,
           password: user.password
         }
 
-        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' })
 
-        res.status(201).json({token, message: 'User registered successfully', });
+        res.status(201).json({token, message: 'User registered successfully', })
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error' })
     }
-});
+})
 
 // Login Route
 app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password } = req.body
 
     try {
-        const user = await User.findOne({ email });
-        if (!user) return res.status(400).json({ message: 'Invalid credentials' });
+        const user = await User.findOne({ email })
+        if (!user) return res.status(400).json({ message: 'Invalid credentials' })
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' })
 
         const userForToken = {
           userId: user._id,
           password: user.password
         }
 
-        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: '1h' })
 
-        res.json({ token, user: { email: user.email } });
+        res.json({ token, user: { email: user.email } })
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error' })
     }
-});
+})
 
 // Users Routes
 app.get('/api/users', async (req, res) => {
-  const users = await User.find({})
-  res.json(users)
+  try {
+    const users = await User.find()
+    const avatars = await Avatar.find()
+    const profiles = await Profile.find()
+    const resumes = await Resume.find()
+
+    const result = users.map(user => {
+      const userId = String(user._id)
+
+      const avatar = avatars.find(a => a.belongsToUser === userId)
+      const profile = profiles.find(p => p.belongsToUser === userId)
+      const resume = resumes.find(r => r.belongsToUser === userId)
+
+      return {
+        id: userId,
+        email: user.email,
+        avatarUrl: avatar?.avatarUrl || null,
+        profile: profile
+          ? {
+              name: profile.name,
+              role: profile.role,
+              bio: profile.bio
+            }
+          : null,
+        resumeUrl: resume?.resumeUrl || null
+      }
+    })
+
+    res.json(result)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Server error' })
+  }
 })
 
-// Search Users Logic
 app.get('/api/search-users', async (req, res) => {
     try {
-      const { query } = req.query;
+      const { query } = req.query
   
       if (!query) {
-        return res.json([]);
+        return res.json([])
       }
   
       const users = await User.find({
         name: { $regex: query, $options: "i" },
-      });
+      })
   
-      res.json(users);
+      res.json(users)
     } catch (err) {
-      res.status(500).json({ message: err.message });
+      res.status(500).json({ message: err.message })
     }
-  });  
+  })  
 
 // Resume Routes
 app.get('/api/resume', async (req, res) => {
@@ -148,8 +206,7 @@ app.get('/api/resume', async (req, res) => {
   const resume = await Resume.findOne({belongsToUser: decoded.userId})
 
   if (!resume) {
-    console.log('The user has no resume')
-    return
+    return res.status(200)
   }
 
   const resumeUrl = resume.resumeUrl
@@ -232,6 +289,7 @@ app.post('/api/avatar', upload.single('image'), async (req, res) => {
   res.json({path: avatarUrl})
 })
 
+// Resume routes
 app.get('/api/resumes/:id', async (req, res) => {
   const userId = req.params.id
   const resume = await Resume.findOne({belongsToUser: userId})
@@ -244,18 +302,147 @@ app.get('/api/resumes/:id', async (req, res) => {
   res.json({path: resume.resumeUrl})
 })
 
-app.get('/api/emails', async (req, res) => {
-  try {
-    // Get all users, but only return their email field
-    const users = await User.find().select('email');
+// Profile routes
+app.get('/api/profile', async (req, res) => {
+  const authenticationHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
 
-    res.json(users); // Sends an array of { _id, email } objects
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  const profile = await Profile.findOne({belongsToUser: decoded.userId})
+
+  if (!profile) {
+    return res.status(200)
   }
-});
+
+  res.json(profile)
+})
+
+app.post('/api/profile', async (req, res) => {
+  const authenticationHeader = req.headers['authorization']
+  
+  if (!authenticationHeader) {
+    return res.status(401).json({ error: 'No authorization header' })
+  }
+
+  const token = authenticationHeader.split(' ')[1] 
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  const body = req.body
+  const {name, role, bio} = body
+  const profile = await Profile.findOne({belongsToUser: decoded.userId})
+
+  if (profile) {
+    profile.name = name
+    profile.role = role
+    profile.bio = bio
+    await profile.save()
+  }
+  else {
+    profile = await Profile.create({
+      name: name,
+      role: role,
+      bio: bio,
+      belongsToUser: decoded.userId,
+    })
+  }
+
+  res.json(profile)
+})
+
+// Connections
+app.post('/api/send-connection-request', async (req, res) => {
+  const { targetUserId } = req.body
+  const authenticationHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  if (decoded.userId === targetUserId) {
+    return res.status(400).json({ message: 'You cannot send a connection request to yourself' })
+  }
+
+  let userConn = await Connection.findOne({ belongsTo: decoded.userId })
+  let targetConn = await Connection.findOne({ belongsTo: targetUserId })
+
+  if (!userConn) {
+    userConn = new Connection({
+      belongsTo: decoded.userId,
+      connected: [],
+      pending: [],
+    })
+    await userConn.save()
+  }
+  else {
+    if (userConn.sent.includes(targetUserId)) {
+      return res.status(400).json({ message: 'Connection request already sent' })
+    }
+    userConn.sent.push(targetUserId)
+    await userConn.save()
+  }
+
+  if (!targetConn) {
+    targetConn = new Connection({
+      belongsTo: targetUserId,
+      connected: [],
+      sent: [],
+      pending: [decoded.userId],
+    })
+    await targetConn.save()
+  }
+  else {
+    targetConn.pending.push(decoded.userId)
+    await targetConn.save()
+  }
+
+  res.status(200).json({
+    message: 'Connection request sent successfully',
+    userConn: userConn,
+    targetConn: targetConn,
+  })
+})
+
+app.post('/api/accept-connection-request', async (req, res) => {
+  const { targetUserId } = req.body
+  const authenticationHeader = req.headers['authorization']
+  const token = authenticationHeader.split(' ')[1]
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+  if (decoded.userId === targetUserId) {
+    return res.status(400).json({ message: 'You cannot accept a connection request from yourself' })
+  }
+
+  const userConn = await Connection.findOne({ belongsTo: decoded.userId })
+  const targetConn = await Connection.findOne({ belongsTo: targetUserId })
+
+  if (!userConn || !targetConn) {
+    return res.status(400).json({ message: 'Connection not found' })
+  }
+
+  if (!userConn.pending.includes(targetUserId)) {
+    return res.status(400).json({ message: 'No connection request found from this user' })
+  }
+
+  userConn.pending = userConn.pending.filter(id => id !== targetUserId)
+  userConn.friended.push(targetUserId)
+  targetConn.sent = targetConn.sent.filter(id => id !== decoded.userId)
+  targetConn.pending = targetConn.pending.filter(id => id !== decoded.userId)
+  targetConn.friended.push(decoded.userId)
+
+  await userConn.save()
+  await targetConn.save()
+
+  res.status(200).json({
+    message: 'Connection request accepted successfully',
+    userConn: userConn,
+    targetConn: targetConn,
+  })
+})
+
+// New routes go here
+
 
 // Start Server
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 4000
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import JobCard from "./JobCard";
+import axios from "axios";
 import "./JobListingDashoard.css";
 
 // ✅ Mock data in case API fails
@@ -36,45 +37,61 @@ const JobListingDashboard = ({ filter = {} }) => {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(false);
 
-  // ✅ Fetch jobs from API or use mock data
   useEffect(() => {
     const fetchJobs = async () => {
       setLoading(true);
       try {
-        const query = new URLSearchParams({
-          limit: "25",
-          offset: "0",
-          title_filter: "Data Engineer",
-          location_filter: "United States"
-        }).toString();
+        const queryParams = {
+          query: filter.jobTitle || "software developer",
+          page: "1",
+          num_pages: "1",
+          country: "us"
+        };
 
-        const res = await fetch(`https://linkedin-job-search-api.p.rapidapi.com/active-jb-24h?${query}`, {
-          method: "GET",
+        if (filter.datePosted === "last-7-days") {
+          queryParams.date_posted = "7days";
+        } else if (filter.datePosted === "last-30-days") {
+          queryParams.date_posted = "30days";
+        }
+
+        if (filter.location && filter.location.toLowerCase() !== "remote") {
+          queryParams.query = `${queryParams.query} in ${filter.location}`;
+        }
+
+        const response = await axios.get("https://jsearch.p.rapidapi.com/search", {
+          params: queryParams,
           headers: {
             "x-rapidapi-key": "1db3b570dfmsh7b6ece564aa6dc2p17f771jsnf5c2e26b7c14",
-            "x-rapidapi-host": "linkedin-job-search-api.p.rapidapi.com"
+            "x-rapidapi-host": "jsearch.p.rapidapi.com"
           }
         });
 
-        if (!res.ok) throw new Error("API quota exceeded");
-        const json = await res.json();
-
-        const jobList = Array.isArray(json) ? json : json?.data || [];
+        const jobList = response.data.data || [];
 
         const uniqueJobs = [];
         const seen = new Set();
         for (const job of jobList) {
-          const key = `${job.title}-${job.organization}`;
+          const key = `${job.job_title}-${job.employer_name}`;
           if (!seen.has(key)) {
             seen.add(key);
-            uniqueJobs.push(job);
+            uniqueJobs.push({
+              id: job.job_id,
+              title: job.job_title,
+              organization: job.employer_name,
+              url: job.job_apply_link,
+              organization_logo: job.employer_logo,
+              locations_derived: [job.job_city || "N/A"],
+              employment_type: [job.job_employment_type || "N/A"],
+              date_posted: job.job_posted_at_datetime_utc
+            });
           }
         }
 
         setAllJobs(uniqueJobs);
         setJobs(uniqueJobs);
+        setApiError(false);
       } catch (error) {
-        console.warn("Falling back to mock data:", error.message);
+        console.warn("API error:", error.message);
         setAllJobs(mockJobs);
         setJobs(mockJobs);
         setApiError(true);
@@ -84,7 +101,7 @@ const JobListingDashboard = ({ filter = {} }) => {
     };
 
     fetchJobs();
-  }, []);
+  }, [filter]);
 
   // ✅ Apply filters
   useEffect(() => {

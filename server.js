@@ -408,35 +408,37 @@ app.post('/api/accept-connection-request', async (req, res) => {
   const token = authenticationHeader.split(' ')[1]
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET)
+  const acceptingUserId = decoded.userId
+  const requestSenderId = targetUserId
 
-  if (decoded.userId === targetUserId) {
+  if (acceptingUserId === requestSenderId) {
     return res.status(400).json({ message: 'You cannot accept a connection request from yourself' })
   }
 
-  const userConn = await Connection.findOne({ belongsTo: decoded.userId })
-  const targetConn = await Connection.findOne({ belongsTo: targetUserId })
+  const acceptingUserConn = await Connection.findOne({ belongsTo: acceptingUserId })
+  const senderUserConn = await Connection.findOne({ belongsTo: requestSenderId })
 
-  if (!userConn || !targetConn) {
+  if (!acceptingUserConn || !senderUserConn) {
     return res.status(400).json({ message: 'Connection not found' })
   }
 
-  if (!userConn.pending.includes(targetUserId)) {
+  if (!acceptingUserConn.pending.includes(requestSenderId)) {
     return res.status(400).json({ message: 'No connection request found from this user' })
   }
 
-  userConn.pending = userConn.pending.filter(id => id !== targetUserId)
-  userConn.friended.push(targetUserId)
-  targetConn.sent = targetConn.sent.filter(id => id !== decoded.userId)
-  targetConn.pending = targetConn.pending.filter(id => id !== decoded.userId)
-  targetConn.friended.push(decoded.userId)
+  acceptingUserConn.pending = acceptingUserConn.pending.filter(id => id !== requestSenderId)
+  acceptingUserConn.connected.push(requestSenderId)
 
-  await userConn.save()
-  await targetConn.save()
+  senderUserConn.sent = senderUserConn.sent.filter(id => id !== acceptingUserId)
+  senderUserConn.connected.push(acceptingUserId)
+
+  await acceptingUserConn.save()
+  await senderUserConn.save()
 
   res.status(200).json({
     message: 'Connection request accepted successfully',
-    userConn: userConn,
-    targetConn: targetConn,
+    userConn: acceptingUserConn,
+    targetConn: senderUserConn,
   })
 })
 

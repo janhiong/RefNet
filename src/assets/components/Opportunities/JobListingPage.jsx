@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { SearchBar } from "./SearchBar";
-import AdvancedSearch from "./AdvancedSearch";
 import JobListingDashboard from "./JobListingDashboard";
 
 const JobListingPage = () => {

@@ -1,14 +1,18 @@
 import './UserList.css'
 
-const UserContainer = ({ user, onClick }) => {
+const UserContainer = ({ user, onClick, connectionStatus }) => {
   const { name, role, bio } = user.profile || {};
-
   const displayName = name || 'Anonymous';
   const displayRole = role || 'No role provided';
   const displayBio = bio || 'No bio provided';
   
   const email = user.email || 'No email provided';
   const avatarUrl = user.avatarUrl || '../images/default-avatar.jpg';
+
+  let buttonLabel = 'Connect'
+  if (connectionStatus === 'sent') buttonLabel = 'Cancel Request'
+  else if (connectionStatus === 'pending') buttonLabel = 'Accept'
+  else if (connectionStatus === 'connected') buttonLabel = 'Disconnect'
 
   return (
     <div className='user-container'>
@@ -18,9 +22,12 @@ const UserContainer = ({ user, onClick }) => {
       <p className='user-profile-role'>{displayRole}</p>
       <p className='user-profile-bio'>{displayBio}</p>
       <img className='user-profile-image' src={avatarUrl} alt={`${displayName}'s avatar`} />
-      <button className='connect-button' onClick={onClick}> Connect </button>
+      <button className='connect-button' onClick={onClick}>
+        {buttonLabel}
+      </button>
     </div>
   );
-}
+};
+
 
 export default UserContainer;

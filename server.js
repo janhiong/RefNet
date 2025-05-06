@@ -350,97 +350,166 @@ app.post('/api/profile', async (req, res) => {
   res.json(profile)
 })
 
-// Connections
-app.post('/api/send-connection-request', async (req, res) => {
-  const { targetUserId } = req.body
+// Connections Route
+app.get('/api/check-connection-status', async (req, res) => {
   const authenticationHeader = req.headers['authorization']
-  const token = authenticationHeader.split(' ')[1]
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET)
-
-  if (decoded.userId === targetUserId) {
-    return res.status(400).json({ message: 'You cannot send a connection request to yourself' })
+  if (!authenticationHeader) {
+    return res.status(401).json({ error: 'No authorization header' })
   }
 
-  let userConn = await Connection.findOne({ belongsTo: decoded.userId })
+  const token = authenticationHeader.split(' ')[1]
+  let decoded
+
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET)
+  } catch (err) {
+    return res.status(401).json({ error: 'Invalid or expired token' })
+  }
+
+  const { targetUserId } = req.query
+  const currentUserId = decoded.userId
+
+  if (currentUserId === targetUserId) {
+    return res.status(400).json({ error: 'Cannot check connection status with yourself' })
+  }
+
+  let userConn = await Connection.findOne({ belongsTo: currentUserId })
+  let targetConn = await Connection.findOne({ belongsTo: targetUserId })
+
+  if (!userConn || !targetConn) {
+    return res.status(404).json({ error: 'Connection data not found' })
+  }
+
+  const isConnected = userConn.connected.includes(targetUserId)
+  const isPending = userConn.pending.includes(targetUserId)
+  const hasSent = userConn.sent.includes(targetUserId)
+
+  res.json({
+    isConnected,
+    isPending,
+    hasSent,
+    message: isConnected
+      ? 'Users are connected'
+      : isPending
+      ? 'Connection request is pending'
+      : hasSent
+      ? 'Connection request has been sent'
+      : 'No connection request sent'
+  })
+})
+
+app.post('/api/toggle-connection', async (req, res) => {
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+
+  if (!token) return res.status(401).json({ message: 'Missing token' })
+
+  let decoded
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET)
+  } catch (err) {
+    return res.status(401).json({ message: 'Invalid or expired token' })
+  }
+
+  const { targetUserId } = req.body
+  const currentUserId = decoded.userId
+
+  if (currentUserId === targetUserId) {
+    return res.status(400).json({ message: 'Cannot connect to yourself' })
+  }
+
+  let userConn = await Connection.findOne({ belongsTo: currentUserId })
   let targetConn = await Connection.findOne({ belongsTo: targetUserId })
 
   if (!userConn) {
-    userConn = new Connection({
-      belongsTo: decoded.userId,
-      connected: [],
-      pending: [],
-    })
-    await userConn.save()
-  }
-  else {
-    if (userConn.sent.includes(targetUserId)) {
-      return res.status(400).json({ message: 'Connection request already sent' })
-    }
-    userConn.sent.push(targetUserId)
-    await userConn.save()
+    userConn = new Connection({ belongsTo: currentUserId, connected: [], sent: [], pending: [] })
   }
 
   if (!targetConn) {
-    targetConn = new Connection({
-      belongsTo: targetUserId,
+    targetConn = new Connection({ belongsTo: targetUserId, connected: [], sent: [], pending: [] })
+  }
+
+  const isConnected = userConn.connected.includes(targetUserId)
+  const isPending = userConn.pending.includes(targetUserId)
+  const hasSent = userConn.sent.includes(targetUserId)
+
+  if (isConnected) {
+    userConn.connected = userConn.connected.filter(id => id !== targetUserId)
+    targetConn.connected = targetConn.connected.filter(id => id !== currentUserId)
+    await userConn.save()
+    await targetConn.save()
+
+    return res.status(200).json({ message: 'Connection removed', userConn, targetConn })
+  }
+
+  if (isPending) {
+    userConn.pending = userConn.pending.filter(id => id !== targetUserId)
+    userConn.connected.push(targetUserId)
+
+    targetConn.sent = targetConn.sent.filter(id => id !== currentUserId)
+    targetConn.connected.push(currentUserId)
+
+    await userConn.save()
+    await targetConn.save()
+
+    return res.status(200).json({ message: 'Connection request accepted', userConn, targetConn })
+  }
+
+  if (hasSent) {
+    userConn.sent = userConn.sent.filter(id => id !== targetUserId)
+    targetConn.pending = targetConn.pending.filter(id => id !== currentUserId)
+
+    await userConn.save()
+    await targetConn.save()
+
+    return res.status(200).json({ message: 'Connection request cancelled', userConn, targetConn })
+  }
+
+  userConn.sent.push(targetUserId)
+  targetConn.pending.push(currentUserId)
+
+  await userConn.save()
+  await targetConn.save()
+
+  res.status(200).json({ message: 'Connection request sent', userConn, targetConn })
+})
+
+app.get('/api/my-connections', async (req, res) => {
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+
+  if (!token) {
+    return res.status(401).json({ message: 'Missing token' })
+  }
+
+  let decoded
+  try {
+    decoded = jwt.verify(token, process.env.JWT_SECRET)
+  } catch (err) {
+    return res.status(401).json({ message: 'Invalid or expired token' })
+  }
+
+  const currentUserId = decoded.userId
+
+  const connection = await Connection.findOne({ belongsTo: currentUserId })
+
+  if (!connection) {
+    return res.json({
       connected: [],
       sent: [],
-      pending: [decoded.userId],
+      pending: []
     })
-    await targetConn.save()
-  }
-  else {
-    targetConn.pending.push(decoded.userId)
-    await targetConn.save()
   }
 
-  res.status(200).json({
-    message: 'Connection request sent successfully',
-    userConn: userConn,
-    targetConn: targetConn,
+  res.json({
+    connected: connection.connected,
+    sent: connection.sent,
+    pending: connection.pending
   })
 })
 
-app.post('/api/accept-connection-request', async (req, res) => {
-  const { targetUserId } = req.body
-  const authenticationHeader = req.headers['authorization']
-  const token = authenticationHeader.split(' ')[1]
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET)
-  const acceptingUserId = decoded.userId
-  const requestSenderId = targetUserId
-
-  if (acceptingUserId === requestSenderId) {
-    return res.status(400).json({ message: 'You cannot accept a connection request from yourself' })
-  }
-
-  const acceptingUserConn = await Connection.findOne({ belongsTo: acceptingUserId })
-  const senderUserConn = await Connection.findOne({ belongsTo: requestSenderId })
-
-  if (!acceptingUserConn || !senderUserConn) {
-    return res.status(400).json({ message: 'Connection not found' })
-  }
-
-  if (!acceptingUserConn.pending.includes(requestSenderId)) {
-    return res.status(400).json({ message: 'No connection request found from this user' })
-  }
-
-  acceptingUserConn.pending = acceptingUserConn.pending.filter(id => id !== requestSenderId)
-  acceptingUserConn.connected.push(requestSenderId)
-
-  senderUserConn.sent = senderUserConn.sent.filter(id => id !== acceptingUserId)
-  senderUserConn.connected.push(acceptingUserId)
-
-  await acceptingUserConn.save()
-  await senderUserConn.save()
-
-  res.status(200).json({
-    message: 'Connection request accepted successfully',
-    userConn: acceptingUserConn,
-    targetConn: senderUserConn,
-  })
-})
 
 // New routes go here
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import JobCard from "./JobCard";
 import axios from "axios";
 import "./JobListingDashoard.css";
+import.meta.env.VITE_RAPIDAPI_KEY
 
 // ✅ Mock data in case API fails
 const mockJobs = [
@@ -61,7 +62,7 @@ const JobListingDashboard = ({ filter = {} }) => {
         const response = await axios.get("https://jsearch.p.rapidapi.com/search", {
           params: queryParams,
           headers: {
-            "x-rapidapi-key": "1db3b570dfmsh7b6ece564aa6dc2p17f771jsnf5c2e26b7c14",
+            "x-rapidapi-key": import.meta.env.VITE_RAPIDAPI_KEY,
             "x-rapidapi-host": "jsearch.p.rapidapi.com"
           }
         });

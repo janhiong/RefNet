@@ -1,9 +1,13 @@
+a, a:visited, a:hover, a:active {
+  color: inherit;
+}
+
 .connections-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   justify-content: center;
   gap: 20px;
-  margin-top: 50px;
+  margin-top: 0px;
   padding: 0 20px;
   margin-left: auto;
   margin-right: auto;
@@ -81,4 +85,39 @@
   text-decoration: none;
   transition: hover, 0.3s;
   margin-top: 15px  ;
+}
+
+.connections-resume-link {
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 16px;
+  margin-bottom: 0px;
+}
+
+.connections-resume-link:hover {
+  color: #2f4f4f;
+}
+
+.no-resume-text {
+  margin-bottom: 0px;
+}
+
+.connections-header-wrapper {
+  display: flex;
+  flex-direction: center;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.connections-header {
+  font-size: 25px;
+  color: black;
+  background-color: white;
+  text-align: center;
+  width: 100%;
+  padding-top: 25px;
+  padding-bottom: 25px;
+  margin: 0px;
+  border-radius: 10px;
 }

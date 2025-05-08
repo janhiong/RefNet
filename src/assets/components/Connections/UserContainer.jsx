@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import './UserList.css'
 
 const UserContainer = ({ user, onClick, connectionStatus }) => {
@@ -8,11 +9,24 @@ const UserContainer = ({ user, onClick, connectionStatus }) => {
   
   const email = user.email || 'No email provided';
   const avatarUrl = user.avatarUrl || '../images/default-avatar.jpg';
+  const resumeUrl = user.resumeUrl || ''
 
-  let buttonLabel = 'Connect'
-  if (connectionStatus === 'sent') buttonLabel = 'Cancel Request'
-  else if (connectionStatus === 'pending') buttonLabel = 'Accept'
-  else if (connectionStatus === 'connected') buttonLabel = 'Disconnect'
+  const [buttonLabel, setButtonLabel] = useState('Connect')
+
+  useEffect(() => {
+    if (connectionStatus === 'sent') {
+      setButtonLabel('Cancel Request')
+    }
+    else if (connectionStatus === 'pending') {
+      setButtonLabel('Accept')
+    }
+    else if (connectionStatus === 'connected') {
+      setButtonLabel('Disconnect')
+    }
+    else {
+      setButtonLabel('Connect')
+    }
+  }, [connectionStatus])
 
   return (
     <div className='user-container'>
@@ -22,12 +36,13 @@ const UserContainer = ({ user, onClick, connectionStatus }) => {
       <p className='user-profile-role'>{displayRole}</p>
       <p className='user-profile-bio'>{displayBio}</p>
       <img className='user-profile-image' src={avatarUrl} alt={`${displayName}'s avatar`} />
+      {resumeUrl && <a href={resumeUrl} width="100%" height="500px" title="Resume Preview" className="connections-resume-link">View Resume</a>}
+      {!resumeUrl && <p className='no-resume-text'>This user has no resume uploaded.</p>}
       <button className='connect-button' onClick={onClick}>
         {buttonLabel}
       </button>
     </div>
   );
 };
-
 
 export default UserContainer;

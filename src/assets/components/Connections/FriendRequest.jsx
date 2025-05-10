@@ -15,8 +15,8 @@ const FriendRequest = () => {
       const token = localStorage.getItem('token')
 
       const [usersRes, connRes] = await Promise.all([
-        fetch('http://localhost:4000/api/users'),
-        fetch('http://localhost:4000/api/my-connections', {
+        fetch(`${import.meta.env.VITE_API_URL}/api/users`),
+        fetch(`${import.meta.env.VITE_API_URL}/my-connections`, {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ])
@@ -49,7 +49,7 @@ const FriendRequest = () => {
     try {
       const token = localStorage.getItem('token')
 
-      await fetch('http://localhost:4000/api/toggle-connection', {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/toggle-connection`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

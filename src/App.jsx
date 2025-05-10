@@ -33,7 +33,7 @@ function App() {
           element={
             <div className="App">
               <header className="header">
-                <h1>RefNet</h1>
+                <h1>ReffNet</h1>
                 <p>Subscribe to receive all internships posted within the last 24 hours.</p>
                 <div className="buttons">
                   <Link to="/login"><button className="signin-btn">Sign In</button></Link>

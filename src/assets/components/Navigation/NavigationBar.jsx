@@ -16,9 +16,6 @@ const NavBar = () => {
         <NavLink to="/friend-recommendeds" className="nav-item">
           <span></span> Rec. Connections
         </NavLink>
-        <NavLink to="/progress" className="nav-item">
-          <span></span> Your Progress
-        </NavLink>
         <NavLink to="/upload-resume" className="nav-item">
           <span></span> Your Profile
         </NavLink>

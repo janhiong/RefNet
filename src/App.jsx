@@ -33,8 +33,8 @@ function App() {
           element={
             <div className="App">
               <header className="header">
-                <h1>JobsDreamer</h1>
-                <p>Subscribe to receive all internships posted within the last 24 hours directly to your email.</p>
+                <h1>RefNet</h1>
+                <p>Subscribe to receive all internships posted within the last 24 hours.</p>
                 <div className="buttons">
                   <Link to="/login"><button className="signin-btn">Sign In</button></Link>
                   <Link to="/signup"><button className="signup-btn">Sign Up</button></Link>
@@ -42,10 +42,9 @@ function App() {
               </header>
 
               <section className="features">
-                <div className="feature-card"><div className="emoji">📅</div><h3>Daily Updates</h3><p>Receive the latest internships posted within the last 24 hours</p></div>
-                <div className="feature-card"><div className="emoji">🌐</div><h3>Never Miss Out</h3><p>Get every internship posted online</p></div>
-                <div className="feature-card"><div className="emoji">🔍</div><h3>Curated Listings</h3><p>Positions across all industries and fields tailored to your interests</p></div>
-                <div className="feature-card"><div className="emoji">💸</div><h3>Free, Forever</h3><p>Completely free for all students</p></div>
+                <div className="feature-card"><div className="emoji">🌐</div><h3>Listing Loop</h3><p>Receive the latest jobs posted within the last 24 hours</p></div>
+                <div className="feature-card"><div className="emoji">📅</div><h3>Credidble Connections</h3><p>Connect with professionals and leverage their networks</p></div>
+                <div className="feature-card"><div className="emoji">🔍</div><h3>Profile Power</h3><p>Boost your credibility by uploading your resume and profile</p></div>
               </section>
             </div>
           }

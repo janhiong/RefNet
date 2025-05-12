@@ -34,7 +34,8 @@
 ## How It Works
 
 1. **Create a Profile** – Highlight your experience, resume, and interests.
-   <img width="1470" alt="Screenshot 2025-05-12 at 10 48 52 AM" src="https://github.com/user-attachments/assets/2a7e90fe-dfdf-482a-b390-746fb452e5cb" />
+  <img width="1470" alt="Screenshot 2025-05-12 at 11 01 05 AM" src="https://github.com/user-attachments/assets/8962c9b4-41e9-4490-8b27-d82c665145c2" />
+  <img width="1470" alt="Screenshot 2025-05-12 at 10 48 52 AM" src="https://github.com/user-attachments/assets/2a7e90fe-dfdf-482a-b390-746fb452e5cb" />
 
 3. **Browse Fresh Jobs** – View jobs posted within the last 24 hours.
 4. **Build Connections** – Use JobsDreamer to connect with industry professionals.

@@ -39,9 +39,10 @@
   <img width="1470" alt="Screenshot 2025-05-12 at 10 48 52 AM" src="https://github.com/user-attachments/assets/2a7e90fe-dfdf-482a-b390-746fb452e5cb" />
 
 3. **Browse Fresh Jobs** – View jobs posted within the last 24 hours.
-4. **Build Connections** – Use JobsDreamer to connect with industry professionals.
-5. **Request Referrals** – Ask for direct referrals from your connections.
-6. **Track Your Progress** – Stay updated on referral status and applications.
+  <img width="894" alt="Screenshot 2025-05-12 at 11 03 36 AM" src="https://github.com/user-attachments/assets/0d49c813-baa1-4870-bc26-ed743799bdc7" />
+5. **Build Connections** – Use JobsDreamer to connect with industry professionals.
+6. **Request Referrals** – Ask for direct referrals from your connections.
+7. **Track Your Progress** – Stay updated on referral status and applications.
 
 ---
 

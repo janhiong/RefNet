@@ -57,22 +57,21 @@
 
 ---
 
-## 💡 Our Mission
+## Our Mission
 
-> ReffNet’s mission is to level the playing field in job and internship applications by making referrals accessible, especially for underrepresented and underserved communities.
+> Our product is a referral-based job search web platform designed to help job seekers stand out in the competitive internship and job market. Our goal is to replace cold applying with warm introductions by helping users build connections and request referrals directly through our site. Using JobsDreamer, users can connect with professionals and leverage their network to obtain that career boosting referral.
+
 
 ---
 
-## 🔗 Live Demo
-
-Coming soon...
 
 ---
 
 ## 🤝 Contributors
 
-- [Your Name](https://github.com/your-profile)
-- [Teammates, if applicable]
+- Thien Hoang
+- Steven Tran
+- Abou Baradji
 
 ---
 
@@ -81,13 +80,13 @@ Coming soon...
 - **Frontend:** React.js, Tailwind CSS  
 - **Backend:** Node.js, Express.js  
 - **Database:** MongoDB  
-- **Deployment:** Netlify (frontend), Heroku/AWS (backend) *(update if different)*
+- **Deployment:** Netlify (frontend), Render (backend) 
 
 ---
 
 ## 📩 Contact
 
-For inquiries, partnership, or demo requests, contact us at **your-email@example.com**.
+For inquiries, partnership, or demo requests, contact us at **janhiong04@gmail.com**.
 
 ---
 

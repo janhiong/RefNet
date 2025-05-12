@@ -6,38 +6,40 @@
 
 ---
 
-## 🔍 Overview
+## Overview
 
 **ReffNet** is a referral-driven job search web platform designed to help students and job seekers break into competitive roles through *trusted introductions* rather than traditional cold applications. By focusing on networking and referrals, ReffNet empowers users to connect with professionals and get the inside edge they need to land internships and full-time jobs.
 
 ---
 
-## 🎯 Key Features
+## Key Features
 
-- **🌟 Referral-Based Job Search:**  
+- **Referral-Based Job Search:**  
   Replace cold applications with warm introductions. Easily request referrals from your network.
 
-- **📅 Fresh Opportunities Daily:**  
+- **Fresh Opportunities Daily:**  
   Discover job postings within **24 hours** of going live and apply immediately.
 
-- **🔗 Build Your Network:**  
+- **Build Your Network:**  
   Use *JobsDreamer*, our connection tool, to expand your professional network and unlock referral opportunities.
 
-- **📄 Seamless Profile Management:**  
+- **Seamless Profile Management:**  
   Showcase your skills and experiences on your personal ReffNet profile and share it with potential referrers.
 
-- **📬 Direct Referral Requests:**  
+- **Direct Referral Requests:**  
   Reach out to professionals with a single click, request referrals, and track application outcomes.
 
 ---
 
-## 🧑‍💻 How It Works
+## How It Works
 
 1. **Create a Profile** – Highlight your experience, resume, and interests.
-2. **Browse Fresh Jobs** – View jobs posted within the last 24 hours.
-3. **Build Connections** – Use JobsDreamer to connect with industry professionals.
-4. **Request Referrals** – Ask for direct referrals from your connections.
-5. **Track Your Progress** – Stay updated on referral status and applications.
+   <img width="1470" alt="Screenshot 2025-05-12 at 10 48 52 AM" src="https://github.com/user-attachments/assets/2a7e90fe-dfdf-482a-b390-746fb452e5cb" />
+
+3. **Browse Fresh Jobs** – View jobs posted within the last 24 hours.
+4. **Build Connections** – Use JobsDreamer to connect with industry professionals.
+5. **Request Referrals** – Ask for direct referrals from your connections.
+6. **Track Your Progress** – Stay updated on referral status and applications.
 
 ---
 

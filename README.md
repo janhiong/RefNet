@@ -21,7 +21,7 @@
   Discover job postings within **24 hours** of going live and apply immediately.
 
 - **Build Your Network:**  
-  Use *JobsDreamer*, our connection tool, to expand your professional network and unlock referral opportunities.
+  Use *ReffNet*, our connection tool, to expand your professional network and unlock referral opportunities.
 
 - **Seamless Profile Management:**  
   Showcase your skills and experiences on your personal ReffNet profile and share it with potential referrers.

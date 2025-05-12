@@ -38,11 +38,15 @@
   <img width="1470" alt="Screenshot 2025-05-12 at 11 02 43 AM" src="https://github.com/user-attachments/assets/78465c96-ab09-4a93-b03c-c26132050cc6" />
   <img width="1470" alt="Screenshot 2025-05-12 at 10 48 52 AM" src="https://github.com/user-attachments/assets/2a7e90fe-dfdf-482a-b390-746fb452e5cb" />
 
-3. **Browse Fresh Jobs** – View jobs posted within the last 24 hours.
+2. **Browse Fresh Jobs** – View jobs posted within the last 24 hours.
   <img width="894" alt="Screenshot 2025-05-12 at 11 03 36 AM" src="https://github.com/user-attachments/assets/0d49c813-baa1-4870-bc26-ed743799bdc7" />
-5. **Build Connections** – Use JobsDreamer to connect with industry professionals.
-6. **Request Referrals** – Ask for direct referrals from your connections.
-7. **Track Your Progress** – Stay updated on referral status and applications.
+  
+3. **Build Connections** – Use JobsDreamer to connect with industry professionals.
+   <img width="1466" alt="Screenshot 2025-05-12 at 10 48 26 AM" src="https://github.com/user-attachments/assets/b420bd56-fbdb-4164-a245-e1fbd9130f7a" />
+
+4. **Request Referrals** – Ask for direct referrals from your connections.
+   <img width="1470" alt="Screenshot 2025-05-12 at 10 48 46 AM" src="https://github.com/user-attachments/assets/6a427b57-05ca-44dc-ac34-7c893c7da3f1" />
+
 
 ---
 

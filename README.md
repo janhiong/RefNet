@@ -1,6 +1,6 @@
 # ReffNet 🌐🚀
 
-![ReffNet Banner](<img width="181" alt="Screenshot 2025-05-12 at 10 59 06 AM" src="https://github.com/user-attachments/assets/4068c7ab-eb29-4261-91c8-7ca040440f50" />)  
+![ReffNet Banner]<img width="181" alt="Screenshot 2025-05-12 at 10 59 06 AM" src="https://github.com/user-attachments/assets/4068c7ab-eb29-4261-91c8-7ca040440f50" />
 *A referral-based job search platform to transform cold applications into warm introductions.*
 
 ---

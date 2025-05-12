@@ -46,15 +46,7 @@
 
 4. **Request Referrals** – Ask for direct referrals from your connections.
    <img width="1470" alt="Screenshot 2025-05-12 at 10 48 46 AM" src="https://github.com/user-attachments/assets/6a427b57-05ca-44dc-ac34-7c893c7da3f1" />
-
-
----
-
-## 📷 Screenshots
-
-![Dashboard Preview](path-to-dashboard-screenshot.jpg)
-*Your personalized dashboard for job tracking and network growth*
-
+   
 ---
 
 ## Our Mission
